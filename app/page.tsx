@@ -42,14 +42,11 @@ export default function Home() {
         borderTop: '1px solid rgba(255,255,255,0.06)',
         display: 'flex', gap: '2rem', alignItems: 'flex-start'
       }}>
-        <div style={{
-          width: '56px', height: '56px', borderRadius: '50%', flexShrink: 0,
-          background: 'rgba(139,26,26,0.3)', border: '1px solid var(--rojo)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontFamily: 'var(--serif)', fontSize: '18px', color: 'var(--crema-oscura)'
-        }}>
-          EV
-        </div>
+        <img
+          src="/ernesto-vidal.jpg"
+          alt="Ernesto Vidal"
+          style={{ width: '56px', height: '56px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '1px solid var(--rojo)' }}
+        />
         <div>
           <p style={{ fontSize: '13px', color: 'var(--rojo-claro)', letterSpacing: '1px', marginBottom: '0.5rem' }}>
             ERNESTO VIDAL
