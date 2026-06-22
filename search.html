@@ -37,16 +37,13 @@
             gap: 12px;
             background: var(--gris-medio);
             border: 1px solid var(--gris-borde);
-            padding: 14px 20px;
-            margin-bottom: 20px;
+            padding: 16px 22px;
             transition: border-color 0.2s;
         }
         .search-box:focus-within {
             border-color: var(--rojo);
         }
-        .search-box i {
-            color: var(--texto-suave);
-        }
+        .search-box i { color: var(--texto-suave); }
         .search-box input {
             flex: 1;
             background: transparent;
@@ -56,44 +53,14 @@
             font-size: 1rem;
             color: var(--crema);
         }
-        .search-box input::placeholder {
-            color: var(--texto-suave);
-        }
-        .filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .filter-btn {
-            padding: 8px 18px;
-            border: 1px solid var(--gris-borde);
-            background: transparent;
-            color: var(--crema-suave);
-            cursor: pointer;
-            font-family: var(--font-body);
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-            transition: all 0.2s;
-        }
-        .filter-btn:hover {
-            border-color: var(--rojo);
-            color: var(--crema);
-        }
-        .filter-btn.active {
-            background: var(--rojo);
-            border-color: var(--rojo);
-            color: var(--crema);
-        }
-        .articles-section {
-            margin-top: 10px;
-        }
+        .search-box input::placeholder { color: var(--texto-suave); }
+        .articles-section { margin-top: 10px; }
         #resultsCount {
             font-size: 1rem;
             color: var(--texto-suave);
             margin-left: 12px;
             font-family: var(--font-body);
         }
-        /* Header search page */
         .search-page-header {
             background: var(--gris-oscuro);
             padding: 20px;
@@ -129,9 +96,7 @@
             font-size: 1.3rem;
             color: var(--crema);
         }
-        .search-logo span b {
-            color: var(--rojo-claro);
-        }
+        .search-logo span b { color: var(--rojo-claro); }
         .search-nav {
             display: flex;
             align-items: center;
@@ -163,7 +128,6 @@
 </head>
 <body>
 
-    <!-- Header compacto -->
     <header class="search-page-header">
         <div class="search-page-header-content">
             <a href="index.html" class="search-logo">
@@ -179,30 +143,16 @@
         </div>
     </header>
 
-    <!-- Buscador -->
     <section class="search-section">
         <div class="search-container">
-            <h2>
-                <i class="fas fa-search"></i>Buscar todo el contenido
-            </h2>
+            <h2><i class="fas fa-search"></i>Buscar todo el contenido</h2>
             <div class="search-box">
                 <i class="fas fa-search"></i>
                 <input type="text" id="searchInputMain" placeholder="Buscar por título, tema, artista, banda...">
             </div>
-            <div class="filters">
-                <button class="filter-btn active" data-category="all">Todos</button>
-                <button class="filter-btn" data-category="historia">Historia</button>
-                <button class="filter-btn" data-category="musica">Música</button>
-                <button class="filter-btn" data-category="politica">Política</button>
-                <button class="filter-btn" data-category="futbol">Fútbol</button>
-                <button class="filter-btn" data-category="rock">Rock</button>
-                <button class="filter-btn" data-category="cumbia">Cumbia</button>
-                <button class="filter-btn" data-category="tango">Tango</button>
-            </div>
         </div>
     </section>
 
-    <!-- Resultados -->
     <main class="content">
         <section class="articles-section">
             <div class="feed-header">
@@ -215,18 +165,13 @@
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="main-footer">
         <div class="footer-content">
             <p class="quote">"Si algo pasó en Argentina, yo tengo una opinión. Puede estar mal, pero es mía."</p>
             <p class="footer-text">LADO D — Carlos Argentina &copy; 2026</p>
             <div class="footer-links">
-                <a href="index.html" class="footer-link">
-                    <i class="fas fa-home"></i> Inicio
-                </a>
-                <a href="admin.html" class="footer-link">
-                    <i class="fas fa-cog"></i> Admin
-                </a>
+                <a href="index.html" class="footer-link"><i class="fas fa-home"></i> Inicio</a>
+                <a href="admin.html" class="footer-link"><i class="fas fa-cog"></i> Admin</a>
             </div>
         </div>
     </footer>
