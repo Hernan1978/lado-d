@@ -1,97 +1,71 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lado D — Argentina sin filtros</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="/eye-favicon.svg?v=3" type="image/svg+xml">
-    <link rel="shortcut icon" href="/eye-favicon.svg?v=3">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LADO D</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <header class="main-header light-header">
-        <div class="header-content">
-            <div class="logo-section">
-                <div class="bohemio-image-container">
-                    <img src="carlos.jpg" alt="Carlos Argentina" class="bohemio-image">
-                    <div class="image-glow"></div>
-                </div>
-            </div>
+  <header class="site-header">
+    <div class="brand">
+      <div class="brand-kicker">LADO D</div>
+      <h1>Argentina sin filtros</h1>
+      <p>Un archivo con opinión, ironía y bastante mala educación bien administrada.</p>
+    </div>
+    <div class="header-actions">
+      <a class="btn btn-primary" href="#notas">Ver notas</a>
+      <a class="btn btn-secondary" href="#cafe">Invitame un café</a>
+    </div>
+  </header>
 
-            <div class="title-section">
-                <p class="eyebrow">LADO D</p>
-                <h1 class="main-title">Argentina sin filtros</h1>
-                <p class="subtitle"> El arte de mirar el cielo, oler el aire y sentenciar "en media hora graniza" desafiando a los satélites.</p>
-                <p class="description">
-                    
-                </p>
+  <main>
+    <section class="manifesto">
+      <p>LADO D es un archivo con opinión. No venimos a fingir objetividad ni a repartir cátedra: miramos la realidad argentina con ironía, humor negro y una sonrisa medio torcida. Si algo nos parece brillante, lo decimos; si algo nos parece ridículo, también. Y si no sabemos bien qué pensar, igual lo escribimos, que para eso existe la soberbia moderada.</p>
+    </section>
 
-                <div class="hero-actions">
-                    <a href="search.html" class="hero-btn primary">
-                        <i class="fas fa-search"></i>
-                        Buscar artículos
-                    </a>
-                    <a href="https://instagram.com/ladod.argentina" target="_blank" class="hero-btn social">
-                        <i class="fab fa-instagram"></i>
-                        Instagram
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
+    <section class="featured">
+      <div class="section-head">
+        <span>Destacado de la semana</span>
+        <a href="#notas">Ver todo</a>
+      </div>
+      <article class="featured-card" id="featuredCard">
+        <div class="meta" id="featuredMeta">Cargando...</div>
+        <h2 id="featuredTitle">Título destacado</h2>
+        <p id="featuredExcerpt">Esperando datos desde Sheets.</p>
+        <a class="btn btn-primary" id="featuredLink" href="#">Leer nota</a>
+      </article>
+    </section>
 
-    <main class="content">
-        <section class="intro-strip">
-            <div>
-                <p class="strip-label">Bienvenida/o</p>
-                <h2>Un archivo para leer, discutir y compartir.</h2>
-            </div>
-            <p class="strip-text">
-                Nacer en Argentina te da automáticamente un doctorado en física cuántica, dirección técnica y macroeconomía.
-            </p>
-        </section>
+    <section id="notas" class="notes">
+      <div class="section-head">
+        <span>Notas</span>
+        <div class="filters" id="filters"></div>
+      </div>
+      <div class="grid" id="notesGrid"></div>
+    </section>
 
-        <section class="mixed-feed">
-            <div class="feed-header">
-                <h2 class="section-title">
-                    <i class="fas fa-star"></i> Destacados
-                </h2>
-                <a href="search.html" class="feed-link">Ver todo <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="articles-grid" id="articlesGrid"></div>
-        </section>
-    </main>
+    <section class="instagram">
+      <div class="section-head">
+        <span>Instagram</span>
+        <a href="https://instagram.com/ladod.argentina" target="_blank" rel="noreferrer">Seguir</a>
+      </div>
+      <div class="instagram-box">
+        <p>Acá podés embebir el feed, 3 posts destacados o un bloque con el último contenido.</p>
+      </div>
+    </section>
 
-    <footer class="main-footer">
-        <div class="footer-content">
-            <p class="quote">"Mi opinión puede ser un delirio místico sin pies ni cabeza, pero es 100% mía."</p>
-            <p class="footer-text">LADO D — Carlos Argentina</p>
-            <div class="footer-links">
-                <a href="search.html" class="footer-link">
-                    <i class="fas fa-search"></i> Buscar
-                </a>
-            </div>
-            <div class="footer-bottom">
-                <span class="footer-year">© <span id="currentYear"></span> Lado D</span>
-                <a href="#" class="cafe-btn" style="display:none;">
-                    ☕ Invitame un café
-                </a>
-            </div>
-        </div>
-    </footer>
+    <section id="cafe" class="support">
+      <h2>Si este archivo te sirve, invitame un café.</h2>
+      <p>No porque esté de moda. Porque sostener una página lleva más ganas que glamour.</p>
+      <a class="btn btn-primary" href="#">Comprar un café</a>
+    </section>
+  </main>
 
-    <script src="app.js"></script>
+  <footer class="site-footer">
+    <p>Acá no prometemos neutralidad. Prometemos mirada propia.</p>
+  </footer>
 
-    <script>
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
-    </script>
-
-    <!-- Botón invisible admin -->
-    <a href="admin.html" style="position:fixed;bottom:0;right:0;width:40px;height:40px;display:block;opacity:0;z-index:9999;"></a>
-
+  <script src="script.js"></script>
 </body>
 </html>
