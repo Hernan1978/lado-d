@@ -1,398 +1,437 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Lado D</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="/eye-favicon.svg?v=3" type="image/svg+xml">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .gate-wrap {
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
-            padding: 24px;
-            background: var(--negro);
-        }
-        .gate-card {
-            width: 100%;
-            max-width: 400px;
-            background: var(--gris-medio);
-            padding: 36px;
-            border: 1px solid var(--gris-borde);
-            border-top: 3px solid var(--rojo);
-        }
-        .gate-card h1 {
-            font-family: var(--font-title);
-            font-size: 1.8rem;
-            color: var(--crema);
-            margin-bottom: 6px;
-        }
-        .gate-card p {
-            color: var(--texto-suave);
-            margin-bottom: 24px;
-            font-size: 0.9rem;
-        }
-        .gate-input {
-            width: 100%;
-            padding: 13px 16px;
-            border: 1px solid var(--gris-borde);
-            background: var(--negro);
-            color: var(--crema);
-            font-size: 1rem;
-            outline: none;
-            margin-bottom: 12px;
-            font-family: var(--font-body);
-            transition: border-color 0.2s;
-        }
-        .gate-input:focus { border-color: var(--rojo); }
-        .gate-btn {
-            width: 100%;
-            padding: 13px;
-            border: 0;
-            background: var(--rojo);
-            color: var(--crema);
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.95rem;
-            transition: background 0.2s;
-            font-family: var(--font-body);
-        }
-        .gate-btn:hover { background: var(--rojo-claro); }
-        .gate-error {
-            color: var(--rojo-claro);
-            margin-top: 10px;
-            font-size: 0.88rem;
-            display: none;
-        }
-        .admin-panel { display: none; }
-        .admin-topbar {
-            background: var(--gris-oscuro);
-            border-bottom: 1px solid rgba(139,26,26,0.3);
-            padding: 16px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .admin-topbar-logo {
-            font-family: var(--font-title);
-            font-size: 1.2rem;
-            color: var(--crema);
-        }
-        .admin-topbar-logo span { color: var(--rojo-claro); }
-        .admin-topbar-logo small {
-            font-family: var(--font-body);
-            font-size: 0.75rem;
-            color: var(--texto-suave);
-            margin-left: 10px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-        .admin-topbar-links { display: flex; gap: 12px; }
-        .admin-topbar-links a {
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            text-decoration: none;
-            border: 1px solid var(--gris-borde);
-            color: var(--crema-suave);
-            transition: all 0.2s;
-        }
-        .admin-topbar-links a:hover { border-color: var(--rojo); color: var(--crema); }
-        .admin-topbar-links a.logout { border-color: rgba(139,26,26,0.4); color: var(--rojo-claro); }
-        .admin-topbar-links a.logout:hover { background: var(--rojo); color: var(--crema); }
-        .admin-container {
-            max-width: 760px;
-            margin: 48px auto;
-            padding: 0 24px 80px;
-        }
-        .admin-section-title {
-            font-size: 0.72rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--rojo-claro);
-            margin-bottom: 20px;
-        }
-        .admin-card {
-            background: var(--gris-medio);
-            border: 1px solid var(--gris-borde);
-            padding: 32px;
-            border-top: 2px solid var(--rojo);
-        }
-        .admin-card h2 {
-            font-family: var(--font-title);
-            font-size: 1.5rem;
-            color: var(--crema);
-            margin-bottom: 28px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .admin-card h2 i { color: var(--rojo-claro); font-size: 1.1rem; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label {
-            display: block;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--texto-suave);
-            margin-bottom: 8px;
-        }
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px 16px;
-            background: var(--negro);
-            border: 1px solid var(--gris-borde);
-            color: var(--crema);
-            font-family: var(--font-body);
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus { border-color: var(--rojo); }
-        .form-group select option { background: var(--gris-medio); }
-        .form-group textarea { height: 100px; resize: vertical; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .form-check {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .form-check input { width: auto; }
-        .form-check label {
-            font-size: 0.88rem;
-            color: var(--crema-suave);
-            text-transform: none;
-            letter-spacing: 0;
-            margin: 0;
-        }
-        .btn-primary {
-            width: 100%;
-            padding: 14px;
-            background: var(--rojo);
-            color: var(--crema);
-            border: none;
-            font-family: var(--font-body);
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .btn-primary:hover { background: var(--rojo-claro); }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-        .success-msg {
-            display: none;
-            background: rgba(139,26,26,0.15);
-            border: 1px solid var(--rojo);
-            color: var(--crema);
-            padding: 14px 16px;
-            margin-top: 16px;
-            font-size: 0.9rem;
-        }
-        .error-msg {
-            display: none;
-            background: rgba(180,35,24,0.15);
-            border: 1px solid #b42318;
-            color: #f08080;
-            padding: 14px 16px;
-            margin-top: 16px;
-            font-size: 0.9rem;
-        }
-        @media (max-width: 600px) {
-            .form-row { grid-template-columns: 1fr; }
-            .admin-container { padding: 0 16px 60px; }
-            .admin-card { padding: 22px; }
-        }
-    </style>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Panel Lado D</title>
+  <style>
+    :root{
+      --bg:#24150f;
+      --panel:#2f1c15;
+      --line:rgba(255,255,255,.08);
+      --text:#f1cfa8;
+      --muted:#c39773;
+      --red:#ff5a3c;
+      --cyan:#5dcfff;
+      --yellow:#f4d35b;
+      --green:#7be35d;
+      --pink:#ff63c7;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:radial-gradient(circle at top,#3a241b 0%,var(--bg) 60%);
+      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    .wrap{max-width:1450px;margin:0 auto;padding:20px}
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:18px
+    }
+    h1{
+      margin:0;
+      color:var(--red);
+      font-size:clamp(1.8rem,3vw,3rem);
+      line-height:1
+    }
+    .small{font-size:.85rem;color:var(--muted);margin-top:6px}
+    .btn{
+      border:0;
+      border-radius:999px;
+      padding:10px 14px;
+      cursor:pointer;
+      background:#40261d;
+      color:var(--text);
+      border:1px solid var(--line);
+      transition:transform .18s ease, background .18s ease, opacity .18s ease;
+    }
+    .btn:hover{transform:translateY(-1px);opacity:.95}
+    .btn.primary{background:var(--red);color:#1b120f;font-weight:700}
+    .btn.good{background:var(--green);color:#132010;font-weight:700}
+    .btn.warn{background:var(--yellow);color:#201809;font-weight:700}
+    .btn.danger{background:#7a2e28;color:#fff}
+    .panel{
+      background:rgba(47,28,21,.82);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:16px;
+      box-shadow:0 18px 50px rgba(0,0,0,.3);
+      backdrop-filter:blur(8px);
+    }
+    .toolbar{
+      display:grid;
+      grid-template-columns:1.2fr .8fr .8fr .8fr .8fr auto;
+      gap:10px;
+      margin-bottom:14px
+    }
+    input,select,textarea{
+      width:100%;
+      background:#20120e;
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px;
+      font:inherit;
+      outline:none;
+    }
+    textarea{min-height:90px;resize:vertical}
+    .table-wrap{
+      overflow:auto;
+      border-radius:18px
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:1200px
+    }
+    th,td{
+      border-bottom:1px solid var(--line);
+      padding:10px;
+      vertical-align:top;
+      text-align:left
+    }
+    th{
+      position:sticky;
+      top:0;
+      background:#2a1712;
+      z-index:1;
+      color:var(--muted);
+      font-size:.82rem;
+      text-transform:uppercase;
+      letter-spacing:.12em
+    }
+    tr:hover td{background:rgba(255,255,255,.02)}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .status-badge{
+      display:inline-flex;
+      padding:4px 8px;
+      border-radius:999px;
+      background:#40261d;
+      border:1px solid var(--line);
+      font-size:.8rem
+    }
+    .chk{width:18px;height:18px}
+    .title-red{color:var(--red)}
+    .title-cyan{color:var(--cyan)}
+    .title-yellow{color:var(--yellow)}
+    .title-green{color:var(--green)}
+    .title-pink{color:var(--pink)}
+
+    #previewModal{
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.75);
+      z-index:9999;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+    .modal-card{
+      max-width:900px;
+      width:100%;
+      background:#2f1c15;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:22px;
+      padding:20px;
+      box-shadow:0 18px 50px rgba(0,0,0,.5);
+    }
+    .modal-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:16px
+    }
+    .modal-top h2{
+      margin:0;
+      color:var(--red);
+      font-size:1.6rem
+    }
+    #previewContent{
+      padding:18px;
+      border-radius:18px;
+      background:#24150f;
+      border:1px solid rgba(255,255,255,.08)
+    }
+    .preview-meta{
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      font-size:.8rem;
+      margin-bottom:10px
+    }
+    .preview-title{
+      margin:0 0 10px;
+      font-size:2rem;
+      line-height:1.1
+    }
+    .preview-excerpt{
+      margin:0 0 14px;
+      color:var(--text);
+      font-size:1rem;
+      white-space:pre-wrap
+    }
+    .preview-link{
+      color:var(--cyan);
+      word-break:break-all
+    }
+    .preview-footer{
+      margin-top:12px;
+      color:var(--green);
+      font-size:.9rem
+    }
+  </style>
 </head>
 <body>
-
-    <!-- LOGIN -->
-    <div class="gate-wrap" id="gateWrap">
-        <div class="gate-card">
-            <h1>Panel de acceso</h1>
-            <p>Ingresá la clave para administrar Lado D.</p>
-            <input type="password" id="adminPass" class="gate-input" placeholder="Clave de acceso">
-            <button class="gate-btn" id="enterBtn">Entrar</button>
-            <div class="gate-error" id="gateError">Clave incorrecta.</div>
-        </div>
+  <div class="wrap">
+    <div class="topbar">
+      <div>
+        <h1>Panel de administración</h1>
+        <div class="small">Editá, previsualizá y guardá los escritos directamente en Sheets.</div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" onclick="newRow()">Nuevo escrito</button>
+        <button class="btn good" onclick="reload()">Refrescar</button>
+      </div>
     </div>
 
-    <!-- PANEL -->
-    <div class="admin-panel" id="adminPanel">
+    <div class="panel">
+      <div class="toolbar">
+        <input id="fSearch" placeholder="Buscar por título, categoría o extracto">
+        <select id="fStatus">
+          <option value="">Todos los estados</option>
+          <option value="publicado">Publicado</option>
+          <option value="borrador">Borrador</option>
+        </select>
+        <select id="fCategory">
+          <option value="">Todas las categorías</option>
+        </select>
+        <select id="fFeatured">
+          <option value="">Todos</option>
+          <option value="true">Destacados</option>
+          <option value="false">No destacados</option>
+        </select>
+        <input id="fId" placeholder="Filtrar por ID">
+        <button class="btn warn" onclick="applyFilters()">Aplicar</button>
+      </div>
 
-        <div class="admin-topbar">
-            <div class="admin-topbar-logo">
-                Lado <span>B</span>
-                <small>Admin</small>
-            </div>
-            <div class="admin-topbar-links">
-                <a href="index.html"><i class="fas fa-home"></i> Ver sitio</a>
-                <a href="#" class="logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Salir</a>
-            </div>
-        </div>
-
-        <div class="admin-container">
-            <p class="admin-section-title">Nuevo contenido</p>
-
-            <div class="admin-card">
-                <h2><i class="fas fa-plus-circle"></i> Crear artículo</h2>
-
-                <form id="articleForm">
-                    <div class="form-group">
-                        <label for="title">Título</label>
-                        <input type="text" id="title" placeholder="El título del artículo..." required>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="category">Categoría</label>
-                            <select id="category" required>
-                                <option value="">Seleccioná</option>
-                                <option value="historia">Historia</option>
-                                <option value="politica">Política</option>
-                                <option value="musica">Música</option>
-                                <option value="rock">Rock</option>
-                                <option value="cumbia">Cumbia</option>
-                                <option value="tango">Tango</option>
-                                <option value="futbol">Fútbol</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="date">Fecha</label>
-                            <input type="date" id="date" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="preview">Descripción breve</label>
-                        <textarea id="preview" placeholder="Un párrafo que anticipe el artículo..." required></textarea>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="image">URL de imagen</label>
-                            <input type="url" id="image" placeholder="https://...">
-                        </div>
-                        <div class="form-group">
-                            <label for="link">Link al artículo</label>
-                            <input type="url" id="link" placeholder="https://...">
-                        </div>
-                    </div>
-
-                    <div class="form-check">
-                        <input type="checkbox" id="destacado">
-                        <label for="destacado">Marcar como destacado en la home</label>
-                    </div>
-
-                    <button type="submit" class="btn-primary" id="submitBtn">
-                        <i class="fas fa-paper-plane"></i> Publicar artículo
-                    </button>
-
-                    <div class="success-msg" id="successMsg">
-                        <i class="fas fa-check"></i> Artículo publicado correctamente en Google Sheets.
-                    </div>
-                    <div class="error-msg" id="errorMsg">
-                        <i class="fas fa-times"></i> Hubo un error al publicar. Intentá de nuevo.
-                    </div>
-                </form>
-            </div>
-        </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Fecha</th><th>Título</th><th>Categoría</th><th>Extracto</th><th>Link</th><th>Destacado</th><th>Orden</th><th>Estado</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
     </div>
+  </div>
 
-    <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbwDCTMXvPb70yOTf39b2_hXda19PHSt0ClTr_RKiduS379wdpWQp96wB9iLdX7BWfi-/exec';
-        const PASS = '1234';
-        const gateWrap = document.getElementById('gateWrap');
-        const adminPanel = document.getElementById('adminPanel');
-        const adminPass = document.getElementById('adminPass');
-        const gateError = document.getElementById('gateError');
+  <div id="previewModal">
+    <div class="modal-card">
+      <div class="modal-top">
+        <h2>Vista previa</h2>
+        <button class="btn" onclick="closePreview()">Cerrar</button>
+      </div>
+      <div id="previewContent"></div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap">
+        <button class="btn" onclick="closePreview()">Seguir editando</button>
+        <button class="btn primary" onclick="saveFromPreview()">Guardar ahora</button>
+      </div>
+    </div>
+  </div>
 
-        function openAdmin() {
-            gateWrap.style.display = 'none';
-            adminPanel.style.display = 'block';
-            sessionStorage.setItem('adminAuth', '1');
-        }
+  <script>
+    let allPosts = [];
+    let visiblePosts = [];
+    let previewData = null;
 
-        function closeAdmin() {
-            sessionStorage.removeItem('adminAuth');
-            gateWrap.style.display = 'grid';
-            adminPanel.style.display = 'none';
-            adminPass.value = '';
-        }
+    function esc(s){
+      return String(s ?? '')
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;');
+    }
 
-        if (sessionStorage.getItem('adminAuth') === '1') openAdmin();
+    function colorForCategory(cat){
+      const c = String(cat || '').toLowerCase();
+      if (c.includes('buenos')) return 'var(--red)';
+      if (c.includes('grab')) return 'var(--cyan)';
+      if (c.includes('lanz')) return 'var(--yellow)';
+      if (c.includes('gira')) return 'var(--green)';
+      if (c.includes('leg')) return 'var(--pink)';
+      return 'var(--red)';
+    }
 
-        document.getElementById('enterBtn').addEventListener('click', () => {
-            if (adminPass.value === PASS) {
-                openAdmin();
-            } else {
-                gateError.style.display = 'block';
-            }
-        });
+    function colorClass(cat){
+      const c = String(cat || '').toLowerCase();
+      if (c.includes('buenos')) return 'title-red';
+      if (c.includes('grab')) return 'title-cyan';
+      if (c.includes('lanz')) return 'title-yellow';
+      if (c.includes('gira')) return 'title-green';
+      if (c.includes('leg')) return 'title-pink';
+      return '';
+    }
 
-        adminPass.addEventListener('keydown', e => {
-            if (e.key === 'Enter') document.getElementById('enterBtn').click();
-        });
+    function reload(){
+      google.script.run.withSuccessHandler(data => {
+        allPosts = data || [];
+        fillCategoryFilter();
+        applyFilters();
+      }).getPosts();
+    }
 
-        document.getElementById('logoutBtn').addEventListener('click', e => {
-            e.preventDefault();
-            closeAdmin();
-        });
+    function fillCategoryFilter(){
+      const sel = document.getElementById('fCategory');
+      const cats = [...new Set(allPosts.map(p => p.category).filter(Boolean))];
+      const current = sel.value;
+      sel.innerHTML = '<option value="">Todas las categorías</option>' + cats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+      sel.value = current;
+    }
 
-        document.getElementById('articleForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const successMsg = document.getElementById('successMsg');
-            const errorMsg = document.getElementById('errorMsg');
+    function applyFilters(){
+      const q = document.getElementById('fSearch').value.trim().toLowerCase();
+      const status = document.getElementById('fStatus').value;
+      const category = document.getElementById('fCategory').value;
+      const featured = document.getElementById('fFeatured').value;
+      const idv = document.getElementById('fId').value.trim().toLowerCase();
 
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publicando...';
-            successMsg.style.display = 'none';
-            errorMsg.style.display = 'none';
+      visiblePosts = allPosts.filter(p => {
+        const hay = `${p.id} ${p.title} ${p.category} ${p.excerpt}`.toLowerCase();
+        if (q && !hay.includes(q)) return false;
+        if (status && String(p.status).toLowerCase() !== status) return false;
+        if (category && p.category !== category) return false;
+        if (featured !== '' && String(!!p.featured) !== featured) return false;
+        if (idv && !String(p.id).toLowerCase().includes(idv)) return false;
+        return true;
+      });
+      render();
+    }
 
-            const payload = {
-                titulo: document.getElementById('title').value,
-                categoria: document.getElementById('category').value,
-                descripcion: document.getElementById('preview').value,
-                fecha: document.getElementById('date').value,
-                imagen: document.getElementById('image').value,
-                link: document.getElementById('link').value,
-                destacado: document.getElementById('destacado').checked ? 'si' : 'no'
-            };
+    function rowEditor(p){
+      return `
+        <tr data-row="${p.rowNumber}">
+          <td><input value="${esc(p.id)}" data-k="id"></td>
+          <td><input value="${esc(p.date)}" data-k="date"></td>
+          <td><input value="${esc(p.title)}" data-k="title" class="${colorClass(p.category)}"></td>
+          <td><input value="${esc(p.category)}" data-k="category"></td>
+          <td><textarea data-k="excerpt">${esc(p.excerpt)}</textarea></td>
+          <td><input value="${esc(p.link)}" data-k="link"></td>
+          <td style="text-align:center"><input class="chk" type="checkbox" data-k="featured" ${p.featured ? 'checked' : ''}></td>
+          <td><input value="${esc(p.order)}" data-k="order"></td>
+          <td>
+            <select data-k="status">
+              <option value="publicado" ${String(p.status).toLowerCase()==='publicado'?'selected':''}>Publicado</option>
+              <option value="borrador" ${String(p.status).toLowerCase()==='borrador'?'selected':''}>Borrador</option>
+            </select>
+          </td>
+          <td>
+            <div class="actions">
+              <button class="btn warn" onclick="previewRow(this)">Vista previa</button>
+              <button class="btn primary" onclick="saveRow(this)">Guardar</button>
+              <button class="btn danger" onclick="delRow(this)">Borrar</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
 
-            try {
-                await fetch(API_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                successMsg.style.display = 'block';
-                this.reset();
-            } catch (err) {
-                errorMsg.style.display = 'block';
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar artículo';
-            }
-        });
-    </script>
+    function render(){
+      document.getElementById('rows').innerHTML = visiblePosts.map(rowEditor).join('');
+    }
+
+    function getRowDataFromTr(tr){
+      const get = k => tr.querySelector(`[data-k="${k}"]`);
+      return {
+        rowNumber: tr.dataset.row,
+        id: get('id').value,
+        date: get('date').value,
+        title: get('title').value,
+        category: get('category').value,
+        excerpt: get('excerpt').value,
+        link: get('link').value,
+        featured: get('featured').checked,
+        order: get('order').value,
+        status: get('status').value
+      };
+    }
+
+    function previewRow(btn){
+      const tr = btn.closest('tr');
+      previewData = getRowDataFromTr(tr);
+
+      document.getElementById('previewContent').innerHTML = `
+        <div class="preview-meta">${esc(previewData.category)} · ${esc(previewData.date)} · ${esc(previewData.status)}</div>
+        <h3 class="preview-title" style="color:${colorForCategory(previewData.category)}">${esc(previewData.title)}</h3>
+        <p class="preview-excerpt">${esc(previewData.excerpt)}</p>
+        <div class="preview-link">${esc(previewData.link)}</div>
+        <div class="preview-footer">${previewData.featured ? 'Destacado' : 'No destacado'}</div>
+      `;
+
+      document.getElementById('previewModal').style.display = 'flex';
+    }
+
+    function closePreview(){
+      document.getElementById('previewModal').style.display = 'none';
+    }
+
+    function saveFromPreview(){
+      if (!previewData) return;
+      google.script.run.withSuccessHandler(() => {
+        closePreview();
+        reload();
+      }).savePost(previewData);
+    }
+
+    function saveRow(btn){
+      const tr = btn.closest('tr');
+      google.script.run.withSuccessHandler(reload).savePost(getRowDataFromTr(tr));
+    }
+
+    function delRow(btn){
+      const tr = btn.closest('tr');
+      if (!confirm('¿Borrar este escrito?')) return;
+      google.script.run.withSuccessHandler(reload).deletePost(tr.dataset.row);
+    }
+
+    function newRow(){
+      const row = {
+        rowNumber: 0,
+        id: '',
+        date: '',
+        title: '',
+        category: '',
+        excerpt: '',
+        link: '',
+        featured: false,
+        order: (allPosts.length + 1),
+        status: 'borrador'
+      };
+      allPosts = [row, ...allPosts];
+      visiblePosts = [row, ...visiblePosts];
+      render();
+      window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
+    }
+
+    ['fSearch','fStatus','fCategory','fFeatured','fId'].forEach(id => {
+      document.addEventListener('input', e => {
+        if (e.target.id === id) applyFilters();
+      });
+      document.addEventListener('change', e => {
+        if (e.target.id === id) applyFilters();
+      });
+    });
+
+    reload();
+  </script>
 </body>
 </html>
