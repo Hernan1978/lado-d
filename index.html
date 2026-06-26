@@ -7,7 +7,9 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="site-header">
+  <div class="bg-grid"></div>
+
+  <header class="site-header reveal">
     <div class="brand">
       <div class="brand-kicker">LADO D</div>
       <h1>Argentina sin filtros</h1>
@@ -20,16 +22,17 @@
   </header>
 
   <main>
-    <section class="manifesto">
+    <section class="manifesto reveal">
       <p>LADO D es un archivo con opinión. No venimos a fingir objetividad ni a repartir cátedra: miramos la realidad argentina con ironía, humor negro y una sonrisa medio torcida. Si algo nos parece brillante, lo decimos; si algo nos parece ridículo, también. Y si no sabemos bien qué pensar, igual lo escribimos, que para eso existe la soberbia moderada.</p>
     </section>
 
-    <section class="featured">
+    <section class="featured reveal">
       <div class="section-head">
         <span>Destacado de la semana</span>
         <a href="#notas">Ver todo</a>
       </div>
-      <article class="featured-card" id="featuredCard">
+      <article class="featured-card">
+        <div class="card-glow"></div>
         <div class="meta" id="featuredMeta">Cargando...</div>
         <h2 id="featuredTitle">Título destacado</h2>
         <p id="featuredExcerpt">Esperando datos desde Sheets.</p>
@@ -37,7 +40,7 @@
       </article>
     </section>
 
-    <section id="notas" class="notes">
+    <section id="notas" class="notes reveal">
       <div class="section-head">
         <span>Notas</span>
         <div class="filters" id="filters"></div>
@@ -45,7 +48,7 @@
       <div class="grid" id="notesGrid"></div>
     </section>
 
-    <section class="instagram">
+    <section class="instagram reveal">
       <div class="section-head">
         <span>Instagram</span>
         <a href="https://instagram.com/ladod.argentina" target="_blank" rel="noreferrer">Seguir</a>
@@ -55,14 +58,14 @@
       </div>
     </section>
 
-    <section id="cafe" class="support">
+    <section id="cafe" class="support reveal">
       <h2>Si este archivo te sirve, invitame un café.</h2>
       <p>No porque esté de moda. Porque sostener una página lleva más ganas que glamour.</p>
       <a class="btn btn-primary" href="#">Comprar un café</a>
     </section>
   </main>
 
-  <footer class="site-footer">
+  <footer class="site-footer reveal">
     <p>Acá no prometemos neutralidad. Prometemos mirada propia.</p>
   </footer>
 
