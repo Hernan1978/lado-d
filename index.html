@@ -1,74 +1,96 @@
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>LADO D</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div class="bg-grid"></div>
+const SHEET_API = 'PEGAR_ACA_TU_URL_DE_APPS_SCRIPT';
 
-  <header class="site-header reveal">
-    <div class="brand">
-      <div class="brand-kicker">LADO D</div>
-      <h1>Argentina sin filtros</h1>
-      <p>Un archivo con opinión, ironía y bastante mala educación bien administrada.</p>
-    </div>
-    <div class="header-actions">
-      <a class="btn btn-primary" href="#notas">Ver notas</a>
-      <a class="btn btn-secondary" href="#cafe">Invitame un café</a>
-    </div>
-  </header>
+const state = {
+  items: [],
+  category: 'Todas'
+};
 
-  <main>
-    <section class="manifesto reveal">
-      <p>LADO D es un archivo con opinión. No venimos a fingir objetividad ni a repartir cátedra: miramos la realidad argentina con ironía, humor negro y una sonrisa medio torcida. Si algo nos parece brillante, lo decimos; si algo nos parece ridículo, también. Y si no sabemos bien qué pensar, igual lo escribimos, que para eso existe la soberbia moderada.</p>
-    </section>
+const filtersEl = document.getElementById('filters');
+const gridEl = document.getElementById('notesGrid');
+const featuredMeta = document.getElementById('featuredMeta');
+const featuredTitle = document.getElementById('featuredTitle');
+const featuredExcerpt = document.getElementById('featuredExcerpt');
+const featuredLink = document.getElementById('featuredLink');
 
-    <section class="featured reveal">
-      <div class="section-head">
-        <span>Destacado de la semana</span>
-        <a href="#notas">Ver todo</a>
-      </div>
-      <article class="featured-card">
-        <div class="card-glow"></div>
-        <div class="meta" id="featuredMeta">Cargando...</div>
-        <h2 id="featuredTitle">Título destacado</h2>
-        <p id="featuredExcerpt">Esperando datos desde Sheets.</p>
-        <a class="btn btn-primary" id="featuredLink" href="#">Leer nota</a>
-      </article>
-    </section>
+function categories(items){
+  return ['Todas', ...new Set(items.map(i => i.category).filter(Boolean))];
+}
 
-    <section id="notas" class="notes reveal">
-      <div class="section-head">
-        <span>Notas</span>
-        <div class="filters" id="filters"></div>
-      </div>
-      <div class="grid" id="notesGrid"></div>
-    </section>
+function normalizeItem(item){
+  return {
+    title: item.title || '',
+    category: item.category || '',
+    date: item.date || '',
+    excerpt: item.excerpt || '',
+    link: item.link || '#',
+    featured: String(item.featured).toLowerCase() === 'true',
+    image: item.image || '',
+    slug: item.slug || ''
+  };
+}
 
-    <section class="instagram reveal">
-      <div class="section-head">
-        <span>Instagram</span>
-        <a href="https://instagram.com/ladod.argentina" target="_blank" rel="noreferrer">Seguir</a>
-      </div>
-      <div class="instagram-box">
-        <p>Acá podés embebir el feed, 3 posts destacados o un bloque con el último contenido.</p>
-      </div>
-    </section>
+function renderFilters(){
+  filtersEl.innerHTML = categories(state.items).map(c => `
+    <button type="button" data-cat="${c}">${c}</button>
+  `).join('');
 
-    <section id="cafe" class="support reveal">
-      <h2>Si este archivo te sirve, invitame un café.</h2>
-      <p>No porque esté de moda. Porque sostener una página lleva más ganas que glamour.</p>
-      <a class="btn btn-primary" href="#">Comprar un café</a>
-    </section>
-  </main>
+  filtersEl.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.category = btn.dataset.cat;
+      render();
+    });
+  });
+}
 
-  <footer class="site-footer reveal">
-    <p>Acá no prometemos neutralidad. Prometemos mirada propia.</p>
-  </footer>
+function renderFeatured(items){
+  const featured = items.find(i => i.featured) || items[0];
 
-  <script src="script.js"></script>
-</body>
-</html>
+  if (!featured) {
+    featuredMeta.textContent = 'Sin datos';
+    featuredTitle.textContent = 'Todavía no hay notas';
+    featuredExcerpt.textContent = 'Cargá tus filas en Sheets y volvé a cargar.';
+    featuredLink.href = '#';
+    return;
+  }
+
+  featuredMeta.textContent = `${featured.category} · ${featured.date}`;
+  featuredTitle.textContent = featured.title;
+  featuredExcerpt.textContent = featured.excerpt;
+  featuredLink.href = featured.link || '#';
+}
+
+function renderGrid(items){
+  gridEl.innerHTML = items.map((item, idx) => `
+    <article class="note-card reveal" style="animation-delay:${Math.min(idx * 0.04, 0.28)}s">
+      <div class="meta">${item.category} · ${item.date}</div>
+      <h3>${item.title}</h3>
+      <p>${item.excerpt}</p>
+      <a href="${item.link || '#'}">Leer más</a>
+    </article>
+  `).join('');
+}
+
+function render(){
+  const filtered = state.category === 'Todas'
+    ? state.items
+    : state.items.filter(i => i.category === state.category);
+
+  renderFeatured(filtered);
+  renderGrid(filtered);
+}
+
+async function loadData(){
+  try{
+    const res = await fetch(SHEET_API);
+    const data = await res.json();
+    const rawItems = Array.isArray(data.items) ? data.items : data;
+    state.items = (rawItems || []).map(normalizeItem);
+  }catch(err){
+    state.items = [];
+  }
+
+  renderFilters();
+  render();
+}
+
+loadData();
