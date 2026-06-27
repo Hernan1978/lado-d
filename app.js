@@ -1,4 +1,4 @@
-const SHEET_API = 'https://script.google.com/macros/s/AKfycbxURjli4JGK3EjrfLSHzf0nIbME529ojIXeLRoH1UV1onGKJ78mS1PvQVj_c62DgNY/exec';
+const SHEET_API = 'https://script.google.com/macros/s/AKfycbyCTJy819lny6Ho3HpcVCkNbRZS5UQX6fA7T3yAKaG93LFm5pN5AqMkN-RGEerZz1Mf/exec';
 
 const state = {
   items: [],
@@ -18,14 +18,14 @@ function categories(items){
 
 function normalizeItem(item){
   return {
-    title: item.title || '',
-    category: item.category || '',
-    date: item.date || '',
-    excerpt: item.excerpt || '',
-    link: item.link || '#',
-    featured: String(item.featured).toLowerCase() === 'true',
-    image: item.image || '',
-    slug: item.slug || ''
+    title:    item.titulo    || '',
+    category: item.categoria || '',
+    date:     item.fecha     || '',
+    excerpt:  item.resumen   || '',
+    link:     item.link      || '#',
+    featured: String(item.destacado).toLowerCase() === 'true',
+    image:    item.imagen    || '',
+    slug:     item.slug      || ''
   };
 }
 
@@ -33,7 +33,6 @@ function renderFilters(){
   filtersEl.innerHTML = categories(state.items).map(c => `
     <button type="button" data-cat="${c}">${c}</button>
   `).join('');
-
   filtersEl.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', () => {
       state.category = btn.dataset.cat;
@@ -44,7 +43,6 @@ function renderFilters(){
 
 function renderFeatured(items){
   const featured = items.find(i => i.featured) || items[0];
-
   if (!featured) {
     featuredMeta.textContent = 'Sin datos';
     featuredTitle.textContent = 'Todavía no hay notas';
@@ -52,8 +50,7 @@ function renderFeatured(items){
     featuredLink.href = '#';
     return;
   }
-
-  featuredMeta.textContent = `${featured.category} · ${featured.date}`;
+  featuredMeta.textContent = featured.date;
   featuredTitle.textContent = featured.title;
   featuredExcerpt.textContent = featured.excerpt;
   featuredLink.href = featured.link || '#';
@@ -62,7 +59,7 @@ function renderFeatured(items){
 function renderGrid(items){
   gridEl.innerHTML = items.map((item, idx) => `
     <article class="note-card reveal" style="animation-delay:${Math.min(idx * 0.04, 0.28)}s">
-      <div class="meta">${item.category} · ${item.date}</div>
+      <div class="meta">${item.date}</div>
       <h3>${item.title}</h3>
       <p>${item.excerpt}</p>
       <a href="${item.link || '#'}">Leer más</a>
@@ -74,21 +71,22 @@ function render(){
   const filtered = state.category === 'Todas'
     ? state.items
     : state.items.filter(i => i.category === state.category);
-
   renderFeatured(filtered);
   renderGrid(filtered);
 }
 
 async function loadData(){
-  try{
+  try {
     const res = await fetch(SHEET_API);
     const data = await res.json();
     const rawItems = Array.isArray(data.items) ? data.items : data;
     state.items = (rawItems || []).map(normalizeItem);
-  }catch(err){
+  } catch(err) {
     state.items = [];
+    featuredMeta.textContent = 'Error al cargar';
+    featuredTitle.textContent = 'No se pudo conectar con Sheets';
+    featuredExcerpt.textContent = 'Verificá que el Apps Script esté desplegado como público.';
   }
-
   renderFilters();
   render();
 }
