@@ -124,13 +124,13 @@ main{
   background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
   border:1px solid var(--border);
   border-radius:24px;
-  padding:20px;
   box-shadow:var(--shadow);
   backdrop-filter:blur(10px);
 }
 
 .manifesto{
   margin:10px 0 28px;
+  padding:20px;
 }
 .manifesto p{
   margin:0;
@@ -156,6 +156,7 @@ main{
 .featured-card{
   position:relative;
   overflow:hidden;
+  padding:20px;
 }
 .card-glow{
   position:absolute;
@@ -164,15 +165,13 @@ main{
   background:radial-gradient(circle, rgba(255,90,60,.22), transparent 66%);
   pointer-events:none;
 }
-.featured-card h2,
-.support h2{
+.featured-card h2{
   margin:.2rem 0 .5rem;
   font-size:clamp(1.6rem,3vw,2.6rem);
 }
 .featured-card p,
 .note-card p,
-.instagram-box p,
-.support p{
+.instagram-box p{
   color:var(--muted);
 }
 .meta{
@@ -206,6 +205,7 @@ main{
 .note-card{
   position:relative;
   overflow:hidden;
+  padding:20px;
   min-height:220px;
 }
 .note-card h3{
@@ -221,14 +221,42 @@ main{
 
 .instagram{margin-bottom:28px}
 .instagram-box{
+  padding:20px;
   min-height:140px;
   display:flex;
   align-items:center;
 }
 
 .support{
-  text-align:center;
-  padding:30px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:28px 32px;
+  margin-bottom:28px;
+}
+
+.support-img{
+  width:120px;
+  height:120px;
+  object-fit:cover;
+  border-radius:50%;
+  border:3px solid rgba(255,90,60,.5);
+  flex-shrink:0;
+}
+
+.support-text{
+  text-align:right;
+}
+
+.support-text h2{
+  margin:.2rem 0 .4rem;
+  font-size:1.2rem;
+}
+
+.support-text p{
+  font-size:.9rem;
+  margin:0 0 1rem;
+  color:var(--muted);
 }
 
 .site-footer{
@@ -258,6 +286,13 @@ main{
   }
   .grid{
     grid-template-columns:1fr;
+  }
+  .support{
+    flex-direction:column;
+    text-align:center;
+  }
+  .support-text{
+    text-align:center;
   }
 }
 
