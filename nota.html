@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#160f0c" />
+  <title>Lado D</title>
+  <link rel="icon" type="image/png" href="pluma.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .nota-wrap{
+      width:min(780px,92vw);
+      margin:0 auto;
+      padding:40px 0 80px;
+    }
+    .nota-volver{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      font-size:.85rem;
+      margin-bottom:32px;
+      letter-spacing:.08em;
+    }
+    .nota-volver:hover{ color:var(--text); }
+    .nota-meta{
+      font-size:.78rem;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:12px;
+    }
+    .nota-titulo{
+      font-size:clamp(2rem,5vw,3.2rem);
+      color:var(--accent);
+      line-height:1.1;
+      margin:0 0 24px;
+      text-shadow:0 0 20px rgba(255,90,60,.2);
+    }
+    .nota-resumen{
+      font-size:1.15rem;
+      color:var(--muted);
+      border-left:3px solid var(--accent);
+      padding-left:16px;
+      margin-bottom:32px;
+      line-height:1.6;
+    }
+    .nota-contenido{
+      font-size:1.05rem;
+      line-height:1.8;
+      color:var(--text);
+      white-space:pre-wrap;
+    }
+    .nota-error{
+      text-align:center;
+      padding:80px 20px;
+      color:var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="nota-wrap">
+    <a class="nota-volver" href="/">← Volver a Lado D</a>
+    <div id="notaContenido">
+      <div class="nota-error">Cargando nota...</div>
+    </div>
+  </div>
+  <script>
+    const SHEET_API = 'https://script.google.com/macros/s/AKfycbyCTJy819lny6Ho3HpcVCkNbRZS5UQX6fA7T3yAKaG93LFm5pN5AqMkN-RGEerZz1Mf/exec';
+
+    async function loadNota() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+
+      if (!id) {
+        document.getElementById('notaContenido').innerHTML = '<div class="nota-error">No se especificó ninguna nota.</div>';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${SHEET_API}?id=${id}`);
+        const data = await res.json();
+        const nota = data.item;
+
+        if (!nota) {
+          document.getElementById('notaContenido').innerHTML = '<div class="nota-error">Nota no encontrada.</div>';
+          return;
+        }
+
+        document.title = `${nota.titulo} · Lado D`;
+        document.getElementById('notaContenido').innerHTML = `
+          <div class="nota-meta">${nota.fecha || ''}</div>
+          <h1 class="nota-titulo">${nota.titulo || ''}</h1>
+          <p class="nota-resumen">${nota.resumen || ''}</p>
+          <div class="nota-contenido">${nota.contenido || ''}</div>
+        `;
+      } catch(err) {
+        document.getElementById('notaContenido').innerHTML = '<div class="nota-error">Error al cargar la nota.</div>';
+      }
+    }
+
+    loadNota();
+  </script>
+</body>
+</html>
