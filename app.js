@@ -28,7 +28,6 @@ function normalizeItem(item){
     slug:     item.slug      || ''
   };
 }
-}
 
 function renderFilters(){
   filtersEl.innerHTML = categories(state.items).map(c => `
