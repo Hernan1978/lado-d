@@ -250,13 +250,17 @@ main{
 
 .support-text h2{
   margin:.2rem 0 .4rem;
-  font-size:1.2rem;
+  font-size:.95rem;
 }
 
 .support-text p{
-  font-size:.9rem;
-  margin:0 0 1rem;
+  font-size:.78rem;
+  margin:0 0 .8rem;
   color:var(--muted);
+}
+.support-text .btn{
+  padding:8px 14px;
+  font-size:.82rem;
 }
 
 .site-footer{
