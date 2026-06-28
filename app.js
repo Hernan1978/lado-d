@@ -115,15 +115,15 @@ async function renderMural(){
         <div style="background:#1a1410;border:1.5px solid #3a2a1a;max-width:500px;width:100%;padding:2rem;position:relative;border-radius:4px;border-top:4px solid #e84a2a;">
           <button onclick="document.getElementById('expOverlay').style.display='none'" style="position:absolute;top:.75rem;right:1rem;background:none;border:none;font-size:22px;cursor:pointer;color:#4a3a2a;">✕</button>
           <div style="text-align:center;border-bottom:1px dashed #3a2a1a;padding-bottom:1rem;margin-bottom:1.2rem;">
-            <div style="font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#6b5a3a;margin-bottom:.4rem;">Tribunal Superior del Rock Argentino · Sala Carlos</div>
+            <div style="font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#6b5a3a;margin-bottom:.4rem;">Podes venir a ver que dice el mural</div>
             <div style="font-size:18px;font-weight:700;color:#e8d5a0;line-height:1.3;">${h.titulo||''}</div>
           </div>
-          <div style="font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#6b5a3a;margin-bottom:.35rem;">Hechos probados</div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#6b5a3a;margin-bottom:.35rem;">Hechos</div>
           <div style="font-size:12px;line-height:1.7;color:#b8a880;margin-bottom:1.1rem;">${h.hechos||'Sin hechos cargados.'}</div>
-          <div style="font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#6b5a3a;margin-bottom:.35rem;">Sentencia de Carlos</div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#6b5a3a;margin-bottom:.35rem;">Opinologo Carlos</div>
           <div style="border-left:3px solid #e84a2a;padding:.75rem 1rem;font-size:14px;line-height:1.6;color:#e8d5a0;margin-bottom:1.1rem;background:rgba(232,74,42,.06);">${h.sentencia||'Sin sentencia cargada.'}</div>
           <button onclick="marcarEstabas(${idx})" id="estabas-${idx}" style="display:flex;align-items:center;gap:8px;background:transparent;border:1px solid #3a2a1a;border-radius:2px;padding:6px 14px;font-size:12px;color:${votado?'#e84a2a':'#6b5a3a'};cursor:pointer;">
-            📍 ${votado ? 'Estuviste ahí' : 'Yo estaba ahí'}
+            📍 ${votado ? 'Vos Estuviste ahí?' : 'Yo estaba ahí'}
           </button>
           <div style="text-align:right;font-size:10px;color:#4a3a2a;border-top:1px dashed #3a2a1a;padding-top:.75rem;margin-top:1rem;">Dr. Carlos de Argentina · Juez Titular</div>
         </div>
