@@ -303,4 +303,7 @@ main{
 @media (prefers-reduced-motion: reduce){
   *{animation:none!important;transition:none!important;scroll-behavior:auto}
   .reveal{opacity:1;transform:none}
+  .mural-preview{
+  margin-bottom:28px;
+}
 }
