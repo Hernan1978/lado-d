@@ -78,60 +78,6 @@ function render(){
   renderGrid(filtered);
 }
 
-function buildBricks(rows){
-  const brickW = 80;
-  const brickH = 36;
-  const gap = 2;
-  const totalW = 700;
-  const bricksPerRow = Math.ceil(totalW / (brickW + gap)) + 1;
-  const colors = ['#3d2418','#3a2115','#3e2519','#3b2216','#3c2418'];
-  let svg = `<svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 700 ${rows*(brickH+gap)}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">`;
-  for(let r=0;r<rows;r++){
-    const offset = r%2===0 ? 0 : -(brickW+gap)/2;
-    for(let c=0;c<bricksPerRow;c++){
-      const x = offset + c*(brickW+gap);
-      const y = r*(brickH+gap);
-      const col = colors[(r+c)%colors.length];
-      svg += `<rect x="${x}" y="${y}" width="${brickW}" height="${brickH}" fill="${col}" rx="1" stroke="#1a120c" stroke-width="1"/>`;
-    }
-  }
-  svg += `<rect x="0" y="0" width="700" height="${rows*(brickH+gap)}" fill="rgba(0,0,0,0.42)"/>`;
-  svg += `</svg>`;
-  return svg;
-}
-
-function buildDrips(rows){
-  const dripColors = ['#8b2500','#1a4a8b','#2a7a1a','#c8a82a'];
-  let html = '';
-  for(let i=0;i<5;i++){
-    const left = 8 + Math.random()*84;
-    const color = dripColors[i % dripColors.length];
-    const delay = (Math.random()*6).toFixed(1);
-    const dur = (5 + Math.random()*4).toFixed(1);
-    html += `<div class="paint-drip" style="left:${left}%;background:${color};animation-delay:${delay}s;animation-duration:${dur}s;"></div>`;
-  }
-  return html;
-}
-
-const rotaciones = [-2.5, 1.8, -1, 2.2, -1.5, 2, -1.2, 1.5];
-const papelColors = ['#ede4c8','#e8dfc4','#f2e9d2','#ebe2c6','#eee5ca'];
-
-function papelHTML(h, i, lastFull){
-  const rot = rotaciones[i % rotaciones.length];
-  const bg = papelColors[i % papelColors.length];
-  const sway = (i % 2 === 0) ? 'papel-sway-a' : 'papel-sway-b';
-  return `
-    <div onclick="abrirExp(${i})" class="papel-mural ${sway}" style="--rot:${rot}deg;cursor:pointer;background:${bg};padding:1rem 1.1rem 1.2rem;position:relative;border-radius:2px;box-shadow:2px 4px 12px rgba(0,0,0,.4);${lastFull?'grid-column:1/-1;max-width:340px;margin:0 auto;':''}">
-      <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(calc(-1 * var(--rot)));width:50px;height:14px;background:rgba(220,200,150,0.55);border:0.5px solid rgba(180,160,100,0.3);border-radius:1px;"></div>
-      <div style="font-family:monospace;font-size:10px;color:#8b2500;letter-spacing:.1em;margin-bottom:.3rem;">${h.anio||''}</div>
-      <div style="font-size:16px;font-weight:700;color:#1a1008;margin-bottom:.4rem;line-height:1.2;">${h.titulo||''}</div>
-      <div style="font-family:monospace;font-size:11.5px;color:#3d2e10;line-height:1.6;">${h.descripcion||h.descrpcion||''}</div>
-      <div style="font-family:monospace;font-size:11px;color:#8b2500;margin-top:.5rem;border-bottom:1.5px solid #8b2500;display:inline-block;">${h.tag||''}</div>
-      <div style="font-family:monospace;font-size:10px;color:#7a6535;margin-top:.4rem;font-style:italic;">↳ tocá para el veredicto de Carlos</div>
-    </div>
-  `;
-}
-
 function muralStylesOnce(){
   if (document.getElementById('muralAnimStyles')) return;
   const style = document.createElement('style');
@@ -149,53 +95,31 @@ function muralStylesOnce(){
       0%,100%{ transform: rotate(var(--rot)); }
       50%{ transform: rotate(calc(var(--rot) - 1.8deg)); }
     }
-    .paint-drip{
-      position:absolute;
-      top:-20px;
-      width:3px;
-      height:0;
-      border-radius:0 0 3px 3px;
-      opacity:.5;
-      animation-name: dripFall;
-      animation-timing-function: ease-in;
-      animation-iteration-count: infinite;
-      pointer-events:none;
-      z-index:1;
-    }
-    @keyframes dripFall{
-      0%{ height:0; top:-20px; opacity:.6; }
-      70%{ height:90px; opacity:.45; }
-      100%{ height:90px; top:100%; opacity:0; }
-    }
-    .carlos-walker{
-      position:absolute;
-      bottom:6px;
-      width:90px;
-      height:90px;
-      border-radius:8px;
-      overflow:hidden;
-      object-fit:cover;
-      opacity:0;
-      z-index:3;
-      pointer-events:none;
-      box-shadow:0 8px 20px rgba(0,0,0,.5);
-      border:2px solid rgba(255,255,255,.15);
-      animation: carlosWalk 16s linear infinite;
-    }
-    @keyframes carlosWalk{
-      0%{ left:-10%; opacity:0; }
-      8%{ opacity:.85; }
-      45%{ opacity:.85; }
-      50%{ opacity:0; }
-      50.1%{ left:-10%; }
-      100%{ left:-10%; opacity:0; }
-    }
   `;
   document.head.appendChild(style);
 }
 
+const rotaciones = [-2.5, 1.8, -1, 2.2, -1.5, 2, -1.2, 1.5];
+const papelColors = ['#ede4c8','#e8dfc4','#f2e9d2','#ebe2c6','#eee5ca'];
 let muralHitos = [];
 const muralVotados = {};
+
+function papelHTML(h, i){
+  const rot = rotaciones[i % rotaciones.length];
+  const bg = papelColors[i % papelColors.length];
+  const sway = (i % 2 === 0) ? 'papel-sway-a' : 'papel-sway-b';
+  return `
+    <div onclick="abrirExp(${i})" class="papel-mural ${sway}"
+      style="--rot:${rot}deg;cursor:pointer;background:${bg};padding:1rem 1.1rem 1.2rem;position:relative;border-radius:2px;box-shadow:2px 4px 12px rgba(0,0,0,.4);">
+      <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(calc(-1 * var(--rot)));width:50px;height:14px;background:rgba(220,200,150,0.55);border:0.5px solid rgba(180,160,100,0.3);border-radius:1px;"></div>
+      <div style="font-family:monospace;font-size:10px;color:#8b2500;letter-spacing:.1em;margin-bottom:.3rem;">${h.anio||''}</div>
+      <div style="font-size:16px;font-weight:700;color:#1a1008;margin-bottom:.4rem;line-height:1.2;">${h.titulo||''}</div>
+      <div style="font-family:monospace;font-size:11.5px;color:#3d2e10;line-height:1.6;">${h.descripcion||h.descrpcion||''}</div>
+      <div style="font-family:monospace;font-size:11px;color:#8b2500;margin-top:.5rem;border-bottom:1.5px solid #8b2500;display:inline-block;">${h.tag||''}</div>
+      <div style="font-family:monospace;font-size:10px;color:#7a6535;margin-top:.4rem;font-style:italic;">↳ tocá para el veredicto de Carlos</div>
+    </div>
+  `;
+}
 
 window.abrirExp = function(idx) {
   const h = muralHitos[idx];
@@ -234,7 +158,6 @@ window.marcarEstabas = function(idx) {
 async function renderMuralPreview(){
   const container = document.getElementById('muralPreviewContainer');
   if (!container) return;
-
   muralStylesOnce();
 
   try {
@@ -250,16 +173,15 @@ async function renderMuralPreview(){
     const preview = muralHitos.slice(0, 2);
 
     container.innerHTML = `
-      <div style="position:relative;border-radius:24px;overflow:hidden;padding:2.5rem 2rem 2rem;">
-        ${buildBricks(8)}
-        ${buildDrips()}
-        <video class="carlos-walker" src="mural.mp4" autoplay muted loop playsinline></video>
+      <div style="position:relative;border-radius:24px;overflow:hidden;padding:2.5rem 2rem 2rem;min-height:260px;background:#1a1612;">
+        <video style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:.45;filter:saturate(.8);" src="carlos-fumando.mp4" autoplay muted loop playsinline></video>
+        <div style="position:absolute;inset:0;background:rgba(10,6,4,.45);z-index:1;pointer-events:none;"></div>
         <div style="position:relative;z-index:2;display:grid;grid-template-columns:repeat(2,1fr);gap:2rem;" id="muralPreviewHitos"></div>
       </div>
       <div id="expOverlay" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;padding:1rem;"></div>
     `;
 
-    document.getElementById('muralPreviewHitos').innerHTML = preview.map((h,i) => papelHTML(h,i,false)).join('');
+    document.getElementById('muralPreviewHitos').innerHTML = preview.map((h,i) => papelHTML(h,i)).join('');
 
   } catch(err) {
     container.innerHTML = '<p style="color:var(--muted);text-align:center;">Error al cargar el mural.</p>';
