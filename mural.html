@@ -140,15 +140,13 @@
         const rows = Math.max(20, hitos.length * 3);
 
         container.innerHTML = `
-          <div style="position:relative;border-radius:24px;overflow:hidden;padding:2.5rem 2rem 2rem;">
-            ${buildBricks(rows)}
-            <div style="position:relative;z-index:2;display:grid;grid-template-columns:repeat(2,1fr);gap:2rem;" id="muralFullHitos"></div>
-          </div>
-          <div id="expOverlay" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;padding:1rem;"></div>
-        `;
-
-        document.getElementById('muralFullHitos').innerHTML = hitos.map((h,i) => papelHTML(h,i)).join('');
-
+  <div style="position:relative;border-radius:24px;overflow:hidden;padding:2.5rem 2rem 2rem;">
+    ${buildBricks(rows)}
+    <video class="carlos-walker" src="mural.mp4" autoplay muted loop playsinline></video>
+    <div style="position:relative;z-index:2;display:grid;grid-template-columns:repeat(2,1fr);gap:2rem;" id="muralFullHitos"></div>
+  </div>
+  <div id="expOverlay" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;padding:1rem;"></div>
+`;
       } catch(err) {
         container.innerHTML = '<p style="color:var(--muted);text-align:center;">Error al cargar el mural.</p>';
       }
