@@ -39,6 +39,44 @@
       text-transform:uppercase;
     }
 
+    .mural-bg-video{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      z-index:0;
+      opacity:.35;
+      filter:saturate(.7);
+    }
+    .mural-bg-dark{
+      position:absolute;
+      inset:0;
+      background:rgba(10,6,4,.55);
+      z-index:1;
+      pointer-events:none;
+    }
+
+    .papelito{
+      position:absolute;
+      top:-30px;
+      width:14px;
+      height:18px;
+      background:rgba(240,232,208,.65);
+      border-radius:1px;
+      z-index:1;
+      pointer-events:none;
+      animation-name: papelitoFall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+    @keyframes papelitoFall{
+      0%{ transform: translateY(0) rotate(0deg); opacity:0; }
+      8%{ opacity:.7; }
+      92%{ opacity:.5; }
+      100%{ transform: translateY(420px) rotate(360deg); opacity:0; }
+    }
+
     .papel-mural{ transform: rotate(var(--rot)); transition: filter .2s; }
     .papel-mural:hover{ filter: brightness(1.08); }
     .papel-sway-a{ animation: swayA 6s ease-in-out infinite; }
@@ -50,47 +88,6 @@
     @keyframes swayB{
       0%,100%{ transform: rotate(var(--rot)); }
       50%{ transform: rotate(calc(var(--rot) - 1.8deg)); }
-    }
-    .paint-drip{
-      position:absolute;
-      top:-20px;
-      width:3px;
-      height:0;
-      border-radius:0 0 3px 3px;
-      opacity:.5;
-      animation-name: dripFall;
-      animation-timing-function: ease-in;
-      animation-iteration-count: infinite;
-      pointer-events:none;
-      z-index:1;
-    }
-    @keyframes dripFall{
-      0%{ height:0; top:-20px; opacity:.6; }
-      70%{ height:90px; opacity:.45; }
-      100%{ height:90px; top:100%; opacity:0; }
-    }
-    .carlos-walker{
-      position:absolute;
-      bottom:6px;
-      width:90px;
-      height:90px;
-      border-radius:8px;
-      overflow:hidden;
-      object-fit:cover;
-      opacity:0;
-      z-index:3;
-      pointer-events:none;
-      box-shadow:0 8px 20px rgba(0,0,0,.5);
-      border:2px solid rgba(255,255,255,.15);
-      animation: carlosWalk 16s linear infinite;
-    }
-    @keyframes carlosWalk{
-      0%{ left:-10%; opacity:0; }
-      8%{ opacity:.85; }
-      45%{ opacity:.85; }
-      50%{ opacity:0; }
-      50.1%{ left:-10%; }
-      100%{ left:-10%; opacity:0; }
     }
   </style>
 </head>
@@ -105,33 +102,14 @@
   <script>
     const SHEET_API = 'https://script.google.com/macros/s/AKfycbwO7TVauAJNFXsK8mAQrePvbGEeZIMjvOX81HP2LGMmO9i1TzKmyswVdhpzK3USDwk/exec';
 
-    function buildBricks(rows){
-      const brickW = 80, brickH = 36, gap = 2, totalW = 700;
-      const bricksPerRow = Math.ceil(totalW / (brickW + gap)) + 1;
-      const colors = ['#3d2418','#3a2115','#3e2519','#3b2216','#3c2418'];
-      let svg = `<svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 700 ${rows*(brickH+gap)}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">`;
-      for(let r=0;r<rows;r++){
-        const offset = r%2===0 ? 0 : -(brickW+gap)/2;
-        for(let c=0;c<bricksPerRow;c++){
-          const x = offset + c*(brickW+gap);
-          const y = r*(brickH+gap);
-          const col = colors[(r+c)%colors.length];
-          svg += `<rect x="${x}" y="${y}" width="${brickW}" height="${brickH}" fill="${col}" rx="1" stroke="#1a120c" stroke-width="1"/>`;
-        }
-      }
-      svg += `<rect x="0" y="0" width="700" height="${rows*(brickH+gap)}" fill="rgba(0,0,0,0.42)"/></svg>`;
-      return svg;
-    }
-
-    function buildDrips(){
-      const dripColors = ['#8b2500','#1a4a8b','#2a7a1a','#c8a82a'];
+    function buildPapelitos(n){
       let html = '';
-      for(let i=0;i<5;i++){
-        const left = 8 + Math.random()*84;
-        const color = dripColors[i % dripColors.length];
-        const delay = (Math.random()*6).toFixed(1);
-        const dur = (5 + Math.random()*4).toFixed(1);
-        html += `<div class="paint-drip" style="left:${left}%;background:${color};animation-delay:${delay}s;animation-duration:${dur}s;"></div>`;
+      for(let i=0;i<n;i++){
+        const left = Math.random()*100;
+        const delay = (Math.random()*8).toFixed(1);
+        const dur = (6 + Math.random()*6).toFixed(1);
+        const rot = Math.random()*40 - 20;
+        html += `<div class="papelito" style="left:${left}%;animation-delay:${delay}s;animation-duration:${dur}s;transform:rotate(${rot}deg);"></div>`;
       }
       return html;
     }
@@ -203,13 +181,11 @@
           return;
         }
 
-        const rows = Math.max(20, hitos.length * 3);
-
         container.innerHTML = `
-          <div style="position:relative;border-radius:24px;overflow:hidden;padding:2.5rem 2rem 2rem;">
-            ${buildBricks(rows)}
-            ${buildDrips()}
-            <video class="carlos-walker" src="mural.mp4" autoplay muted loop playsinline></video>
+          <div style="position:relative;border-radius:24px;overflow:hidden;padding:2.5rem 2rem 2rem;min-height:300px;background:#1a1612;">
+            <video class="mural-bg-video" src="mural.mp4" autoplay muted loop playsinline></video>
+            <div class="mural-bg-dark"></div>
+            ${buildPapelitos(14)}
             <div style="position:relative;z-index:2;display:grid;grid-template-columns:repeat(2,1fr);gap:2rem;" id="muralFullHitos"></div>
           </div>
           <div id="expOverlay" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;padding:1rem;"></div>
