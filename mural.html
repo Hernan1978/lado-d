@@ -38,25 +38,55 @@
       letter-spacing:.1em;
       text-transform:uppercase;
     }
-    .papelito{
+    .mural-bg-video{
       position:absolute;
-      top:-30px;
-      width:14px;
-      height:18px;
-      background:rgba(255,245,220,.85);
-      border:1px solid rgba(0,0,0,.15);
-      border-radius:1px;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      z-index:0;
+      opacity:.5;
+      filter:saturate(.8);
+      transform:scale(1.1);
+    }
+    .mural-bg-dark{
+      position:absolute;
+      inset:0;
+      background:rgba(10,6,4,.4);
+      z-index:1;
+      pointer-events:none;
+    }
+    .gota{
+      position:absolute;
+      top:-40px;
+      width:4px;
+      border-radius:0 0 4px 4px;
       z-index:2;
       pointer-events:none;
-      animation-name: papelitoFall;
-      animation-timing-function: linear;
-      animation-iteration-count: infinite;
+      animation-name:gotaFall;
+      animation-timing-function:ease-in;
+      animation-iteration-count:infinite;
     }
-    @keyframes papelitoFall{
-      0%{ transform: translateY(0) rotate(0deg); opacity:0; }
-      8%{ opacity:.8; }
-      92%{ opacity:.6; }
-      100%{ transform: translateY(500px) rotate(360deg); opacity:0; }
+    @keyframes gotaFall{
+      0%{ height:0; opacity:0; }
+      10%{ opacity:.7; }
+      80%{ height:120px; opacity:.5; }
+      100%{ height:120px; top:100%; opacity:0; }
+    }
+    .carlos-video-box{
+      position:relative;
+      z-index:3;
+      border-radius:16px;
+      overflow:hidden;
+      margin-bottom:2rem;
+      box-shadow:0 12px 32px rgba(0,0,0,.5);
+      max-height:260px;
+    }
+    .carlos-video-box video{
+      width:100%;
+      height:260px;
+      object-fit:cover;
+      display:block;
     }
     .papel-mural{ transform: rotate(var(--rot)); transition: filter .2s; }
     .papel-mural:hover{ filter: brightness(1.08); }
@@ -70,20 +100,6 @@
       0%,100%{ transform: rotate(var(--rot)); }
       50%{ transform: rotate(calc(var(--rot) - 1.8deg)); }
     }
-    .carlos-fumando{
-      position:fixed;
-      bottom:20px;
-      right:20px;
-      width:140px;
-      height:140px;
-      object-fit:cover;
-      border-radius:12px;
-      z-index:50;
-      opacity:.85;
-      box-shadow:0 8px 24px rgba(0,0,0,.6);
-      border:2px solid rgba(255,255,255,.12);
-      pointer-events:none;
-    }
   </style>
 </head>
 <body>
@@ -94,18 +110,21 @@
     <p class="mural-sub">Hechos, hitos y veredictos sin orden ni piedad</p>
     <div id="muralFullContainer"><p style="color:var(--muted);text-align:center;">Cargando mural...</p></div>
   </div>
-  <video class="carlos-fumando" src="carlos-fumando.mp4" autoplay muted loop playsinline></video>
   <script>
     const SHEET_API = 'https://script.google.com/macros/s/AKfycbwO7TVauAJNFXsK8mAQrePvbGEeZIMjvOX81HP2LGMmO9i1TzKmyswVdhpzK3USDwk/exec';
 
-    function buildPapelitos(n){
+    const videosCarlos = ['mural.mp4', 'carlos-caminando.mp4'];
+    let videoIdx = 0;
+
+    function buildGotas(n){
+      const colores = ['#8b0000','#1a1a8b','#1a6b1a','#8b6b00','#5a0a5a'];
       let html = '';
       for(let i=0;i<n;i++){
-        const left = Math.random()*100;
+        const left = (5 + Math.random()*90).toFixed(1);
+        const color = colores[i % colores.length];
         const delay = (Math.random()*8).toFixed(1);
-        const dur = (6 + Math.random()*6).toFixed(1);
-        const rot = Math.random()*40 - 20;
-        html += `<div class="papelito" style="left:${left}%;animation-delay:${delay}s;animation-duration:${dur}s;transform:rotate(${rot}deg);"></div>`;
+        const dur = (4 + Math.random()*5).toFixed(1);
+        html += `<div class="gota" style="left:${left}%;background:${color};animation-delay:${delay}s;animation-duration:${dur}s;"></div>`;
       }
       return html;
     }
@@ -165,6 +184,18 @@
       }
     };
 
+    function setupVideoLoop(){
+      const vid = document.getElementById('carlosVideo');
+      if (!vid) return;
+      vid.src = videosCarlos[videoIdx];
+      vid.play();
+      vid.onended = function(){
+        videoIdx = (videoIdx + 1) % videosCarlos.length;
+        vid.src = videosCarlos[videoIdx];
+        vid.play();
+      };
+    }
+
     async function loadMural(){
       const container = document.getElementById('muralFullContainer');
       try {
@@ -179,15 +210,19 @@
 
         container.innerHTML = `
           <div style="position:relative;border-radius:24px;overflow:hidden;padding:2.5rem 2rem 2rem;min-height:300px;background:#1a1612;">
-            <video style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:.55;filter:saturate(.85);transform:scale(1.15);" src="carlos-caminando.mp4" autoplay muted loop playsinline></video>
-            <div style="position:absolute;inset:0;background:rgba(10,6,4,.35);z-index:1;pointer-events:none;"></div>
-            ${buildPapelitos(36)}
+            <video class="mural-bg-video" src="carlos-fumando.mp4" autoplay muted loop playsinline></video>
+            <div class="mural-bg-dark"></div>
+            ${buildGotas(20)}
+            <div class="carlos-video-box">
+              <video id="carlosVideo" muted playsinline></video>
+            </div>
             <div style="position:relative;z-index:3;display:grid;grid-template-columns:repeat(2,1fr);gap:2rem;" id="muralFullHitos"></div>
           </div>
           <div id="expOverlay" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;padding:1rem;"></div>
         `;
 
         document.getElementById('muralFullHitos').innerHTML = hitos.map((h,i) => papelHTML(h,i)).join('');
+        setupVideoLoop();
 
       } catch(err) {
         container.innerHTML = '<p style="color:var(--muted);text-align:center;">Error al cargar el mural.</p>';
