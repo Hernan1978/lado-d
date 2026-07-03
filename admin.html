@@ -250,6 +250,12 @@
   </div>
 
   <script>
+    const PASSWORD = '1234';
+const ingresada = prompt('Ingresá la contraseña para acceder al panel:');
+if (ingresada !== PASSWORD) {
+  document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:monospace;color:#ff5a3c;font-size:1.2rem;">Acceso denegado.</div>';
+  throw new Error('Acceso denegado');
+}
     let allPosts = [];
     let visiblePosts = [];
     let previewData = null;
