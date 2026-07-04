@@ -109,14 +109,6 @@
     }
     tr:hover td{background:rgba(255,255,255,.02)}
     .actions{display:flex;gap:8px;flex-wrap:wrap}
-    .status-badge{
-      display:inline-flex;
-      padding:4px 8px;
-      border-radius:999px;
-      background:#40261d;
-      border:1px solid var(--line);
-      font-size:.8rem
-    }
     .chk{width:18px;height:18px}
     .title-red{color:var(--red)}
     .title-cyan{color:var(--cyan)}
@@ -288,7 +280,7 @@
       <div class="img-result" id="imgResult"></div>
       <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px;">
         <button class="btn" onclick="closeImgModal()">Cancelar</button>
-        <button class="btn primary" onclick="uploadImg()">Subir a Drive</button>
+        <button class="btn primary" onclick="uploadImg()">Subir imagen</button>
       </div>
     </div>
   </div>
@@ -300,6 +292,9 @@
       document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:monospace;color:#ff5a3c;font-size:1.2rem;">Acceso denegado.</div>';
       throw new Error('Acceso denegado');
     }
+
+    const CLOUDINARY_CLOUD = 'fflkkrkk';
+    const CLOUDINARY_PRESET = 'lado_d_upload';
 
     let allPosts = [];
     let visiblePosts = [];
@@ -510,21 +505,27 @@
       status.textContent = 'Subiendo...';
       result.style.display = 'none';
 
-      const reader = new FileReader();
-      reader.onload = e => {
-        const base64 = e.target.result.split(',')[1];
-        google.script.run
-          .withSuccessHandler(url => {
-            status.textContent = '✅ Imagen subida. Copiá el link:';
-            result.textContent = url;
-            result.style.display = 'block';
-          })
-          .withFailureHandler(err => {
-            status.textContent = '❌ Error: ' + err.message;
-          })
-          .uploadImage(base64, file.name, file.type);
-      };
-      reader.readAsDataURL(file);
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_PRESET);
+
+      fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.secure_url) {
+          status.textContent = '✅ Imagen subida. Copiá el link:';
+          result.textContent = data.secure_url;
+          result.style.display = 'block';
+        } else {
+          status.textContent = '❌ Error: ' + (data.error?.message || 'Verificá el upload preset.');
+        }
+      })
+      .catch(err => {
+        status.textContent = '❌ Error: ' + err.message;
+      });
     }
 
     ['fSearch','fStatus','fCategory','fFeatured','fId'].forEach(id => {
