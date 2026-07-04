@@ -56,6 +56,7 @@
     .btn.good{background:var(--green);color:#132010;font-weight:700}
     .btn.warn{background:var(--yellow);color:#201809;font-weight:700}
     .btn.danger{background:#7a2e28;color:#fff}
+    .btn.exit{background:#3a1a2a;color:#ff63c7;border-color:rgba(255,99,199,.2);}
     .panel{
       background:rgba(47,28,21,.82);
       border:1px solid var(--line);
@@ -123,7 +124,7 @@
     .title-green{color:var(--green)}
     .title-pink{color:var(--pink)}
 
-    #previewModal{
+    #previewModal, #imgModal{
       display:none;
       position:fixed;
       inset:0;
@@ -187,6 +188,28 @@
       color:var(--green);
       font-size:.9rem
     }
+    .img-preview{
+      max-width:100%;
+      border-radius:12px;
+      margin-top:12px;
+      display:none;
+    }
+    .img-result{
+      margin-top:12px;
+      padding:10px;
+      background:#20120e;
+      border-radius:12px;
+      border:1px solid var(--line);
+      color:var(--cyan);
+      font-size:.85rem;
+      word-break:break-all;
+      display:none;
+    }
+    .upload-status{
+      margin-top:8px;
+      font-size:.85rem;
+      color:var(--muted);
+    }
   </style>
 </head>
 <body>
@@ -199,6 +222,8 @@
       <div class="actions">
         <button class="btn primary" onclick="newRow()">Nuevo escrito</button>
         <button class="btn good" onclick="reload()">Refrescar</button>
+        <button class="btn warn" onclick="openImgModal()">Subir imagen</button>
+        <button class="btn exit" onclick="salir()">Salir</button>
       </div>
     </div>
 
@@ -235,6 +260,7 @@
     </div>
   </div>
 
+  <!-- MODAL PREVIEW -->
   <div id="previewModal">
     <div class="modal-card">
       <div class="modal-top">
@@ -249,16 +275,41 @@
     </div>
   </div>
 
+  <!-- MODAL IMAGEN -->
+  <div id="imgModal">
+    <div class="modal-card" style="max-width:500px;">
+      <div class="modal-top">
+        <h2>Subir imagen</h2>
+        <button class="btn" onclick="closeImgModal()">Cerrar</button>
+      </div>
+      <input type="file" id="imgFile" accept="image/*" onchange="previewImg(this)">
+      <img id="imgPreview" class="img-preview">
+      <div class="upload-status" id="uploadStatus"></div>
+      <div class="img-result" id="imgResult"></div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px;">
+        <button class="btn" onclick="closeImgModal()">Cancelar</button>
+        <button class="btn primary" onclick="uploadImg()">Subir a Drive</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const PASSWORD = '1234';
-const ingresada = prompt('Ingresá la contraseña para acceder al panel:');
-if (ingresada !== PASSWORD) {
-  document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:monospace;color:#ff5a3c;font-size:1.2rem;">Acceso denegado.</div>';
-  throw new Error('Acceso denegado');
-}
+    const ingresada = prompt('Ingresá la contraseña para acceder al panel:');
+    if (ingresada !== PASSWORD) {
+      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:monospace;color:#ff5a3c;font-size:1.2rem;">Acceso denegado.</div>';
+      throw new Error('Acceso denegado');
+    }
+
     let allPosts = [];
     let visiblePosts = [];
     let previewData = null;
+
+    function salir(){
+      if (confirm('¿Salir del panel?')) {
+        window.location.href = '/';
+      }
+    }
 
     function esc(s){
       return String(s ?? '')
@@ -374,7 +425,6 @@ if (ingresada !== PASSWORD) {
     function previewRow(btn){
       const tr = btn.closest('tr');
       previewData = getRowDataFromTr(tr);
-
       document.getElementById('previewContent').innerHTML = `
         <div class="preview-meta">${esc(previewData.category)} · ${esc(previewData.date)} · ${esc(previewData.status)}</div>
         <h3 class="preview-title" style="color:${colorForCategory(previewData.category)}">${esc(previewData.title)}</h3>
@@ -382,7 +432,6 @@ if (ingresada !== PASSWORD) {
         <div class="preview-link">${esc(previewData.link)}</div>
         <div class="preview-footer">${previewData.featured ? 'Destacado' : 'No destacado'}</div>
       `;
-
       document.getElementById('previewModal').style.display = 'flex';
     }
 
@@ -426,6 +475,56 @@ if (ingresada !== PASSWORD) {
       visiblePosts = [row, ...visiblePosts];
       render();
       window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
+    }
+
+    function openImgModal(){
+      document.getElementById('imgModal').style.display = 'flex';
+      document.getElementById('imgResult').style.display = 'none';
+      document.getElementById('imgResult').textContent = '';
+      document.getElementById('uploadStatus').textContent = '';
+      document.getElementById('imgPreview').style.display = 'none';
+      document.getElementById('imgFile').value = '';
+    }
+
+    function closeImgModal(){
+      document.getElementById('imgModal').style.display = 'none';
+    }
+
+    function previewImg(input){
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = document.getElementById('imgPreview');
+        img.src = e.target.result;
+        img.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function uploadImg(){
+      const file = document.getElementById('imgFile').files[0];
+      if (!file) { alert('Elegí una imagen primero.'); return; }
+      const status = document.getElementById('uploadStatus');
+      const result = document.getElementById('imgResult');
+      status.textContent = 'Subiendo...';
+      result.style.display = 'none';
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        const base64 = e.target.result.split(',')[1];
+        google.script.run
+          .withSuccessHandler(url => {
+            status.textContent = '✅ Imagen subida. Copiá el link:';
+            result.textContent = url;
+            result.style.display = 'block';
+          })
+          .withFailureHandler(err => {
+            status.textContent = '❌ Error: ' + err.message;
+          })
+          .uploadImage(base64, file.name, file.type);
+      };
+      reader.readAsDataURL(file);
     }
 
     ['fSearch','fStatus','fCategory','fFeatured','fId'].forEach(id => {
