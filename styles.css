@@ -258,9 +258,25 @@ main{
   margin:0 0 .8rem;
   color:var(--muted);
 }
+
 .support-text .btn{
   padding:8px 14px;
   font-size:.82rem;
+}
+
+.mural-preview{
+  margin-bottom:28px;
+}
+
+.nota-imagen{
+  width:40%;
+  max-height:220px;
+  object-fit:cover;
+  border-radius:12px;
+  margin-bottom:20px;
+  float:right;
+  margin-left:20px;
+  box-shadow:0 8px 20px rgba(0,0,0,.4);
 }
 
 .site-footer{
@@ -298,12 +314,14 @@ main{
   .support-text{
     text-align:center;
   }
+  .nota-imagen{
+    width:100%;
+    float:none;
+    margin-left:0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce){
   *{animation:none!important;transition:none!important;scroll-behavior:auto}
   .reveal{opacity:1;transform:none}
-  .mural-preview{
-  margin-bottom:28px;
-}
 }
