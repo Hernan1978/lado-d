@@ -315,10 +315,14 @@ main{
     text-align:center;
   }
   .nota-imagen{
-    width:100%;
-    float:none;
-    margin-left:0;
-  }
+  width:220px;
+  height:160px;
+  object-fit:cover;
+  border-radius:12px;
+  margin:0 0 20px 20px;
+  float:right;
+  box-shadow:0 8px 20px rgba(0,0,0,.4);
+}
 }
 
 @media (prefers-reduced-motion: reduce){
