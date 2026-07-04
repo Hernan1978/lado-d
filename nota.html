@@ -37,6 +37,15 @@
       margin:0 0 24px;
       text-shadow:0 0 20px rgba(255,90,60,.2);
     }
+    .nota-imagen{
+      width:100%;
+      max-height:420px;
+      object-fit:cover;
+      border-radius:16px;
+      margin-bottom:28px;
+      display:block;
+      box-shadow:0 12px 32px rgba(0,0,0,.4);
+    }
     .nota-resumen{
       font-size:1.15rem;
       color:var(--muted);
@@ -69,30 +78,29 @@
   <script>
     const SHEET_API = 'https://script.google.com/macros/s/AKfycbwO7TVauAJNFXsK8mAQrePvbGEeZIMjvOX81HP2LGMmO9i1TzKmyswVdhpzK3USDwk/exec';
 
-
     async function loadNota() {
       const params = new URLSearchParams(window.location.search);
       const id = params.get('id');
-
       if (!id) {
         document.getElementById('notaContenido').innerHTML = '<div class="nota-error">No se especificó ninguna nota.</div>';
         return;
       }
-
       try {
         const res = await fetch(`${SHEET_API}?id=${id}`);
         const data = await res.json();
         const nota = data.item;
-
         if (!nota) {
           document.getElementById('notaContenido').innerHTML = '<div class="nota-error">Nota no encontrada.</div>';
           return;
         }
-
         document.title = `${nota.titulo} · Lado D`;
+        const imgHTML = nota.imagen
+          ? `<img class="nota-imagen" src="${nota.imagen}" alt="${nota.titulo}">`
+          : '';
         document.getElementById('notaContenido').innerHTML = `
           <div class="nota-meta">${nota.fecha || ''}</div>
           <h1 class="nota-titulo">${nota.titulo || ''}</h1>
+          ${imgHTML}
           <p class="nota-resumen">${nota.resumen || ''}</p>
           <div class="nota-contenido">${nota.contenido || ''}</div>
         `;
