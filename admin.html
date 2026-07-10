@@ -83,30 +83,12 @@
       outline:none;
     }
     textarea{min-height:90px;resize:vertical}
-    .table-wrap{
-      overflow:auto;
-      border-radius:18px
-    }
-    table{
-      width:100%;
-      border-collapse:collapse;
-      min-width:1200px
-    }
-    th,td{
-      border-bottom:1px solid var(--line);
-      padding:10px;
-      vertical-align:top;
-      text-align:left
-    }
+    .table-wrap{overflow:auto;border-radius:18px}
+    table{width:100%;border-collapse:collapse;min-width:1200px}
+    th,td{border-bottom:1px solid var(--line);padding:10px;vertical-align:top;text-align:left}
     th{
-      position:sticky;
-      top:0;
-      background:#2a1712;
-      z-index:1;
-      color:var(--muted);
-      font-size:.82rem;
-      text-transform:uppercase;
-      letter-spacing:.12em
+      position:sticky;top:0;background:#2a1712;z-index:1;
+      color:var(--muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.12em
     }
     tr:hover td{background:rgba(255,255,255,.02)}
     .actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -116,93 +98,47 @@
     .title-yellow{color:var(--yellow)}
     .title-green{color:var(--green)}
     .title-pink{color:var(--pink)}
-
-    #previewModal, #imgModal{
-      display:none;
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.75);
-      z-index:9999;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
+    .badge-publicado{
+      display:inline-block;padding:3px 10px;border-radius:999px;
+      background:rgba(123,227,93,.15);color:var(--green);
+      border:1px solid rgba(123,227,93,.3);font-size:.75rem;
+    }
+    .badge-borrador{
+      display:inline-block;padding:3px 10px;border-radius:999px;
+      background:rgba(244,211,91,.1);color:var(--yellow);
+      border:1px solid rgba(244,211,91,.25);font-size:.75rem;
+    }
+    #previewModal,#imgModal{
+      display:none;position:fixed;inset:0;
+      background:rgba(0,0,0,.75);z-index:9999;
+      align-items:center;justify-content:center;padding:20px;
     }
     .modal-card{
-      max-width:900px;
-      width:100%;
-      background:#2f1c15;
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:22px;
-      padding:20px;
-      box-shadow:0 18px 50px rgba(0,0,0,.5);
+      max-width:900px;width:100%;background:#2f1c15;
+      border:1px solid rgba(255,255,255,.12);border-radius:22px;
+      padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.5);
     }
     .modal-top{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      margin-bottom:16px
+      display:flex;justify-content:space-between;align-items:center;
+      gap:12px;margin-bottom:16px
     }
-    .modal-top h2{
-      margin:0;
-      color:var(--red);
-      font-size:1.6rem
-    }
+    .modal-top h2{margin:0;color:var(--red);font-size:1.6rem}
     #previewContent{
-      padding:18px;
-      border-radius:18px;
-      background:#24150f;
+      padding:18px;border-radius:18px;background:#24150f;
       border:1px solid rgba(255,255,255,.08)
     }
-    .preview-meta{
-      color:var(--muted);
-      text-transform:uppercase;
-      letter-spacing:.12em;
-      font-size:.8rem;
-      margin-bottom:10px
-    }
-    .preview-title{
-      margin:0 0 10px;
-      font-size:2rem;
-      line-height:1.1
-    }
-    .preview-excerpt{
-      margin:0 0 14px;
-      color:var(--text);
-      font-size:1rem;
-      white-space:pre-wrap
-    }
-    .preview-link{
-      color:var(--cyan);
-      word-break:break-all
-    }
-    .preview-footer{
-      margin-top:12px;
-      color:var(--green);
-      font-size:.9rem
-    }
-    .img-preview{
-      max-width:100%;
-      border-radius:12px;
-      margin-top:12px;
-      display:none;
-    }
+    .preview-meta{color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-size:.8rem;margin-bottom:10px}
+    .preview-title{margin:0 0 10px;font-size:2rem;line-height:1.1}
+    .preview-excerpt{margin:0 0 14px;color:var(--text);font-size:1rem;white-space:pre-wrap}
+    .preview-link{color:var(--cyan);word-break:break-all}
+    .preview-footer{margin-top:12px;color:var(--green);font-size:.9rem}
+    .img-preview{max-width:100%;border-radius:12px;margin-top:12px;display:none;}
     .img-result{
-      margin-top:12px;
-      padding:10px;
-      background:#20120e;
-      border-radius:12px;
-      border:1px solid var(--line);
-      color:var(--cyan);
-      font-size:.85rem;
-      word-break:break-all;
-      display:none;
+      margin-top:12px;padding:10px;background:#20120e;border-radius:12px;
+      border:1px solid var(--line);color:var(--cyan);font-size:.85rem;
+      word-break:break-all;display:none;
     }
-    .upload-status{
-      margin-top:8px;
-      font-size:.85rem;
-      color:var(--muted);
-    }
+    .upload-status{margin-top:8px;font-size:.85rem;color:var(--muted);}
   </style>
 </head>
 <body>
@@ -210,7 +146,7 @@
     <div class="topbar">
       <div>
         <h1>Panel de administración</h1>
-        <div class="small">Editá, previsualizá y guardá los escritos directamente en Sheets.</div>
+        <div class="small">Editá, previsualizá y publicá los escritos directamente en Sheets.</div>
       </div>
       <div class="actions">
         <button class="btn primary" onclick="newRow()">Nuevo escrito</button>
@@ -244,7 +180,9 @@
         <table>
           <thead>
             <tr>
-              <th>ID</th><th>Fecha</th><th>Título</th><th>Categoría</th><th>Extracto</th><th>Link</th><th>Destacado</th><th>Orden</th><th>Estado</th><th>Acciones</th>
+              <th>ID</th><th>Fecha</th><th>Título</th><th>Categoría</th>
+              <th>Extracto</th><th>Imagen</th><th>Destacado</th>
+              <th>Estado</th><th>Acciones</th>
             </tr>
           </thead>
           <tbody id="rows"></tbody>
@@ -302,9 +240,7 @@
     let previewData = null;
 
     function salir(){
-      if (confirm('¿Salir del panel?')) {
-        window.location.href = '/';
-      }
+      if (confirm('¿Salir del panel?')) window.location.href = '/';
     }
 
     function esc(s){
@@ -317,27 +253,19 @@
 
     function colorForCategory(cat){
       const c = String(cat || '').toLowerCase();
-      if (c.includes('buenos')) return 'var(--red)';
-      if (c.includes('grab')) return 'var(--cyan)';
-      if (c.includes('lanz')) return 'var(--yellow)';
-      if (c.includes('gira')) return 'var(--green)';
-      if (c.includes('leg')) return 'var(--pink)';
+      if (c.includes('rock')) return 'var(--red)';
+      if (c.includes('pol')) return 'var(--cyan)';
+      if (c.includes('cult')) return 'var(--yellow)';
+      if (c.includes('dep')) return 'var(--green)';
       return 'var(--red)';
-    }
-
-    function colorClass(cat){
-      const c = String(cat || '').toLowerCase();
-      if (c.includes('buenos')) return 'title-red';
-      if (c.includes('grab')) return 'title-cyan';
-      if (c.includes('lanz')) return 'title-yellow';
-      if (c.includes('gira')) return 'title-green';
-      if (c.includes('leg')) return 'title-pink';
-      return '';
     }
 
     function reload(){
       google.script.run.withSuccessHandler(data => {
-        allPosts = data || [];
+        allPosts = (data || []).map(p => ({
+          ...p,
+          status: String(p.estado || p.status || 'borrador').toLowerCase()
+        }));
         fillCategoryFilter();
         applyFilters();
       }).getPosts();
@@ -345,7 +273,7 @@
 
     function fillCategoryFilter(){
       const sel = document.getElementById('fCategory');
-      const cats = [...new Set(allPosts.map(p => p.category).filter(Boolean))];
+      const cats = [...new Set(allPosts.map(p => p.category || p.categoria).filter(Boolean))];
       const current = sel.value;
       sel.innerHTML = '<option value="">Todas las categorías</option>' + cats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
       sel.value = current;
@@ -359,11 +287,11 @@
       const idv = document.getElementById('fId').value.trim().toLowerCase();
 
       visiblePosts = allPosts.filter(p => {
-        const hay = `${p.id} ${p.title} ${p.category} ${p.excerpt}`.toLowerCase();
+        const hay = `${p.id} ${p.title||p.titulo} ${p.category||p.categoria} ${p.excerpt||p.resumen}`.toLowerCase();
         if (q && !hay.includes(q)) return false;
-        if (status && String(p.status).toLowerCase() !== status) return false;
-        if (category && p.category !== category) return false;
-        if (featured !== '' && String(!!p.featured) !== featured) return false;
+        if (status && p.status !== status) return false;
+        if (category && (p.category||p.categoria) !== category) return false;
+        if (featured !== '' && String(!!(p.featured||p.destacado)) !== featured) return false;
         if (idv && !String(p.id).toLowerCase().includes(idv)) return false;
         return true;
       });
@@ -371,20 +299,28 @@
     }
 
     function rowEditor(p){
+      const title = p.title || p.titulo || '';
+      const date = p.date || p.fecha || '';
+      const category = p.category || p.categoria || '';
+      const excerpt = p.excerpt || p.resumen || '';
+      const link = p.link || '';
+      const imagen = p.imagen || '';
+      const featured = !!(p.featured || (typeof p.destacado === 'boolean' ? p.destacado : String(p.destacado).toLowerCase() === 'true'));
+      const status = p.status || 'borrador';
+
       return `
         <tr data-row="${p.rowNumber}">
-          <td><input value="${esc(p.id)}" data-k="id"></td>
-          <td><input value="${esc(p.date)}" data-k="date"></td>
-          <td><input value="${esc(p.title)}" data-k="title" class="${colorClass(p.category)}"></td>
-          <td><input value="${esc(p.category)}" data-k="category"></td>
-          <td><textarea data-k="excerpt">${esc(p.excerpt)}</textarea></td>
-          <td><input value="${esc(p.link)}" data-k="link"></td>
-          <td style="text-align:center"><input class="chk" type="checkbox" data-k="featured" ${p.featured ? 'checked' : ''}></td>
-          <td><input value="${esc(p.order)}" data-k="order"></td>
+          <td><input value="${esc(p.id)}" data-k="id" style="width:50px"></td>
+          <td><input value="${esc(date)}" data-k="date" style="width:100px"></td>
+          <td><input value="${esc(title)}" data-k="title" style="min-width:160px"></td>
+          <td><input value="${esc(category)}" data-k="category" style="width:100px"></td>
+          <td><textarea data-k="excerpt" style="min-width:180px">${esc(excerpt)}</textarea></td>
+          <td><input value="${esc(imagen)}" data-k="imagen" placeholder="URL imagen" style="min-width:120px"></td>
+          <td style="text-align:center"><input class="chk" type="checkbox" data-k="featured" ${featured ? 'checked' : ''}></td>
           <td>
             <select data-k="status">
-              <option value="publicado" ${String(p.status).toLowerCase()==='publicado'?'selected':''}>Publicado</option>
-              <option value="borrador" ${String(p.status).toLowerCase()==='borrador'?'selected':''}>Borrador</option>
+              <option value="publicado" ${status==='publicado'?'selected':''}>✅ Publicado</option>
+              <option value="borrador" ${status!=='publicado'?'selected':''}>📝 Borrador</option>
             </select>
           </td>
           <td>
@@ -411,10 +347,11 @@
         title: get('title').value,
         category: get('category').value,
         excerpt: get('excerpt').value,
-        link: get('link').value,
+        link: get('link') ? get('link').value : '',
         featured: get('featured').checked,
-        order: get('order').value,
-        status: get('status').value
+        imagen: get('imagen').value,
+        status: get('status').value,
+        estado: get('status').value
       };
     }
 
@@ -424,9 +361,9 @@
       document.getElementById('previewContent').innerHTML = `
         <div class="preview-meta">${esc(previewData.category)} · ${esc(previewData.date)} · ${esc(previewData.status)}</div>
         <h3 class="preview-title" style="color:${colorForCategory(previewData.category)}">${esc(previewData.title)}</h3>
+        ${previewData.imagen ? `<img src="${esc(previewData.imagen)}" style="max-width:100%;border-radius:12px;margin-bottom:12px;">` : ''}
         <p class="preview-excerpt">${esc(previewData.excerpt)}</p>
-        <div class="preview-link">${esc(previewData.link)}</div>
-        <div class="preview-footer">${previewData.featured ? 'Destacado' : 'No destacado'}</div>
+        <div class="preview-footer">${previewData.featured ? '⭐ Destacado' : 'No destacado'} · ${previewData.status === 'publicado' ? '✅ Publicado' : '📝 Borrador'}</div>
       `;
       document.getElementById('previewModal').style.display = 'flex';
     }
@@ -458,19 +395,20 @@
       const row = {
         rowNumber: 0,
         id: '',
-        date: '',
+        date: new Date().toLocaleDateString('es-AR'),
         title: '',
         category: '',
         excerpt: '',
         link: '',
+        imagen: '',
         featured: false,
-        order: (allPosts.length + 1),
-        status: 'borrador'
+        status: 'borrador',
+        estado: 'borrador'
       };
       allPosts = [row, ...allPosts];
       visiblePosts = [row, ...visiblePosts];
       render();
-      window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
+      window.scrollTo({top:0, behavior:'smooth'});
     }
 
     function openImgModal(){
@@ -530,12 +468,8 @@
     }
 
     ['fSearch','fStatus','fCategory','fFeatured','fId'].forEach(id => {
-      document.addEventListener('input', e => {
-        if (e.target.id === id) applyFilters();
-      });
-      document.addEventListener('change', e => {
-        if (e.target.id === id) applyFilters();
-      });
+      document.addEventListener('input', e => { if (e.target.id === id) applyFilters(); });
+      document.addEventListener('change', e => { if (e.target.id === id) applyFilters(); });
     });
 
     reload();
