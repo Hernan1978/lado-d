@@ -28,29 +28,15 @@
     }
     .wrap{max-width:1450px;margin:0 auto;padding:20px}
     .topbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-bottom:18px
+      display:flex;justify-content:space-between;align-items:center;
+      gap:12px;flex-wrap:wrap;margin-bottom:18px
     }
-    h1{
-      margin:0;
-      color:var(--red);
-      font-size:clamp(1.8rem,3vw,3rem);
-      line-height:1
-    }
+    h1{margin:0;color:var(--red);font-size:clamp(1.8rem,3vw,3rem);line-height:1}
     .small{font-size:.85rem;color:var(--muted);margin-top:6px}
     .btn{
-      border:0;
-      border-radius:999px;
-      padding:10px 14px;
-      cursor:pointer;
-      background:#40261d;
-      color:var(--text);
-      border:1px solid var(--line);
-      transition:transform .18s ease, background .18s ease, opacity .18s ease;
+      border:0;border-radius:999px;padding:10px 14px;cursor:pointer;
+      background:#40261d;color:var(--text);border:1px solid var(--line);
+      transition:transform .18s ease,background .18s ease,opacity .18s ease;
     }
     .btn:hover{transform:translateY(-1px);opacity:.95}
     .btn.primary{background:var(--red);color:#1b120f;font-weight:700}
@@ -59,28 +45,18 @@
     .btn.danger{background:#7a2e28;color:#fff}
     .btn.exit{background:#3a1a2a;color:#ff63c7;border-color:rgba(255,99,199,.2);}
     .panel{
-      background:rgba(47,28,21,.82);
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:16px;
-      box-shadow:0 18px 50px rgba(0,0,0,.3);
-      backdrop-filter:blur(8px);
+      background:rgba(47,28,21,.82);border:1px solid var(--line);
+      border-radius:22px;padding:16px;
+      box-shadow:0 18px 50px rgba(0,0,0,.3);backdrop-filter:blur(8px);
     }
     .toolbar{
-      display:grid;
-      grid-template-columns:1.2fr .8fr .8fr .8fr .8fr auto;
-      gap:10px;
-      margin-bottom:14px
+      display:grid;grid-template-columns:1.2fr .8fr .8fr .8fr .8fr auto;
+      gap:10px;margin-bottom:14px
     }
     input,select,textarea{
-      width:100%;
-      background:#20120e;
-      color:var(--text);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px;
-      font:inherit;
-      outline:none;
+      width:100%;background:#20120e;color:var(--text);
+      border:1px solid var(--line);border-radius:12px;
+      padding:10px;font:inherit;outline:none;
     }
     textarea{min-height:90px;resize:vertical}
     .table-wrap{overflow:auto;border-radius:18px}
@@ -93,21 +69,6 @@
     tr:hover td{background:rgba(255,255,255,.02)}
     .actions{display:flex;gap:8px;flex-wrap:wrap}
     .chk{width:18px;height:18px}
-    .title-red{color:var(--red)}
-    .title-cyan{color:var(--cyan)}
-    .title-yellow{color:var(--yellow)}
-    .title-green{color:var(--green)}
-    .title-pink{color:var(--pink)}
-    .badge-publicado{
-      display:inline-block;padding:3px 10px;border-radius:999px;
-      background:rgba(123,227,93,.15);color:var(--green);
-      border:1px solid rgba(123,227,93,.3);font-size:.75rem;
-    }
-    .badge-borrador{
-      display:inline-block;padding:3px 10px;border-radius:999px;
-      background:rgba(244,211,91,.1);color:var(--yellow);
-      border:1px solid rgba(244,211,91,.25);font-size:.75rem;
-    }
     #previewModal,#imgModal{
       display:none;position:fixed;inset:0;
       background:rgba(0,0,0,.75);z-index:9999;
@@ -139,6 +100,15 @@
       word-break:break-all;display:none;
     }
     .upload-status{margin-top:8px;font-size:.85rem;color:var(--muted);}
+    .toast{
+      position:fixed;bottom:24px;right:24px;
+      background:var(--green);color:#132010;
+      padding:12px 20px;border-radius:999px;
+      font-weight:700;font-size:.9rem;
+      opacity:0;transition:opacity .3s;
+      z-index:99999;pointer-events:none;
+    }
+    .toast.show{opacity:1;}
   </style>
 </head>
 <body>
@@ -191,6 +161,8 @@
     </div>
   </div>
 
+  <div class="toast" id="toast">✅ Guardado</div>
+
   <!-- MODAL PREVIEW -->
   <div id="previewModal">
     <div class="modal-card">
@@ -232,12 +204,20 @@
       throw new Error('Acceso denegado');
     }
 
+    const SHEET_API = 'https://script.google.com/macros/s/AKfycbwO7TVauAJNFXsK8mAQrePvbGEeZIMjvOX81HP2LGMmO9i1TzKmyswVdhpzK3USDwk/exec';
     const CLOUDINARY_CLOUD = 'fflkkrkk';
     const CLOUDINARY_PRESET = 'lado_d_upload';
 
     let allPosts = [];
     let visiblePosts = [];
     let previewData = null;
+
+    function showToast(msg){
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
 
     function salir(){
       if (confirm('¿Salir del panel?')) window.location.href = '/';
@@ -251,29 +231,23 @@
         .replaceAll('"','&quot;');
     }
 
-    function colorForCategory(cat){
-      const c = String(cat || '').toLowerCase();
-      if (c.includes('rock')) return 'var(--red)';
-      if (c.includes('pol')) return 'var(--cyan)';
-      if (c.includes('cult')) return 'var(--yellow)';
-      if (c.includes('dep')) return 'var(--green)';
-      return 'var(--red)';
-    }
-
-    function reload(){
-      google.script.run.withSuccessHandler(data => {
-        allPosts = (data || []).map(p => ({
-          ...p,
-          status: String(p.estado || p.status || 'borrador').toLowerCase()
-        }));
+    async function reload(){
+      const tbody = document.getElementById('rows');
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:30px;">Cargando...</td></tr>';
+      try {
+        const res = await fetch(`${SHEET_API}?admin=true`);
+        const data = await res.json();
+        allPosts = (data.items || []);
         fillCategoryFilter();
         applyFilters();
-      }).getPosts();
+      } catch(err) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--red);padding:30px;">Error al cargar. Verificá el Apps Script.</td></tr>';
+      }
     }
 
     function fillCategoryFilter(){
       const sel = document.getElementById('fCategory');
-      const cats = [...new Set(allPosts.map(p => p.category || p.categoria).filter(Boolean))];
+      const cats = [...new Set(allPosts.map(p => p.categoria).filter(Boolean))];
       const current = sel.value;
       sel.innerHTML = '<option value="">Todas las categorías</option>' + cats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
       sel.value = current;
@@ -287,11 +261,11 @@
       const idv = document.getElementById('fId').value.trim().toLowerCase();
 
       visiblePosts = allPosts.filter(p => {
-        const hay = `${p.id} ${p.title||p.titulo} ${p.category||p.categoria} ${p.excerpt||p.resumen}`.toLowerCase();
+        const hay = `${p.id} ${p.titulo} ${p.categoria} ${p.resumen}`.toLowerCase();
         if (q && !hay.includes(q)) return false;
-        if (status && p.status !== status) return false;
-        if (category && (p.category||p.categoria) !== category) return false;
-        if (featured !== '' && String(!!(p.featured||p.destacado)) !== featured) return false;
+        if (status && String(p.estado||'').toLowerCase() !== status) return false;
+        if (category && p.categoria !== category) return false;
+        if (featured !== '' && String(String(p.destacado).toLowerCase()==='true') !== featured) return false;
         if (idv && !String(p.id).toLowerCase().includes(idv)) return false;
         return true;
       });
@@ -299,28 +273,22 @@
     }
 
     function rowEditor(p){
-      const title = p.title || p.titulo || '';
-      const date = p.date || p.fecha || '';
-      const category = p.category || p.categoria || '';
-      const excerpt = p.excerpt || p.resumen || '';
-      const link = p.link || '';
-      const imagen = p.imagen || '';
-      const featured = !!(p.featured || (typeof p.destacado === 'boolean' ? p.destacado : String(p.destacado).toLowerCase() === 'true'));
-      const status = p.status || 'borrador';
-
+      const estado = String(p.estado||'borrador').toLowerCase();
       return `
         <tr data-row="${p.rowNumber}">
           <td><input value="${esc(p.id)}" data-k="id" style="width:50px"></td>
-          <td><input value="${esc(date)}" data-k="date" style="width:100px"></td>
-          <td><input value="${esc(title)}" data-k="title" style="min-width:160px"></td>
-          <td><input value="${esc(category)}" data-k="category" style="width:100px"></td>
-          <td><textarea data-k="excerpt" style="min-width:180px">${esc(excerpt)}</textarea></td>
-          <td><input value="${esc(imagen)}" data-k="imagen" placeholder="URL imagen" style="min-width:120px"></td>
-          <td style="text-align:center"><input class="chk" type="checkbox" data-k="featured" ${featured ? 'checked' : ''}></td>
+          <td><input value="${esc(p.fecha)}" data-k="fecha" style="width:100px"></td>
+          <td><input value="${esc(p.titulo)}" data-k="titulo" style="min-width:160px"></td>
+          <td><input value="${esc(p.categoria||'')}" data-k="categoria" style="width:100px"></td>
+          <td><textarea data-k="resumen" style="min-width:180px">${esc(p.resumen)}</textarea></td>
+          <td><input value="${esc(p.imagen||'')}" data-k="imagen" placeholder="URL imagen" style="min-width:140px"></td>
+          <td style="text-align:center">
+            <input class="chk" type="checkbox" data-k="destacado" ${String(p.destacado).toLowerCase()==='true'?'checked':''}>
+          </td>
           <td>
-            <select data-k="status">
-              <option value="publicado" ${status==='publicado'?'selected':''}>✅ Publicado</option>
-              <option value="borrador" ${status!=='publicado'?'selected':''}>📝 Borrador</option>
+            <select data-k="estado">
+              <option value="publicado" ${estado==='publicado'?'selected':''}>✅ Publicado</option>
+              <option value="borrador" ${estado!=='publicado'?'selected':''}>📝 Borrador</option>
             </select>
           </td>
           <td>
@@ -335,7 +303,9 @@
     }
 
     function render(){
-      document.getElementById('rows').innerHTML = visiblePosts.map(rowEditor).join('');
+      document.getElementById('rows').innerHTML = visiblePosts.length
+        ? visiblePosts.map(rowEditor).join('')
+        : '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:30px;">No hay escritos que coincidan.</td></tr>';
     }
 
     function getRowDataFromTr(tr){
@@ -343,15 +313,14 @@
       return {
         rowNumber: tr.dataset.row,
         id: get('id').value,
-        date: get('date').value,
-        title: get('title').value,
-        category: get('category').value,
-        excerpt: get('excerpt').value,
-        link: get('link') ? get('link').value : '',
-        featured: get('featured').checked,
+        fecha: get('fecha').value,
+        titulo: get('titulo').value,
+        categoria: get('categoria').value,
+        resumen: get('resumen').value,
         imagen: get('imagen').value,
-        status: get('status').value,
-        estado: get('status').value
+        destacado: get('destacado').checked ? 'true' : 'false',
+        estado: get('estado').value,
+        contenido: allPosts.find(p => String(p.rowNumber) === tr.dataset.row)?.contenido || ''
       };
     }
 
@@ -359,11 +328,11 @@
       const tr = btn.closest('tr');
       previewData = getRowDataFromTr(tr);
       document.getElementById('previewContent').innerHTML = `
-        <div class="preview-meta">${esc(previewData.category)} · ${esc(previewData.date)} · ${esc(previewData.status)}</div>
-        <h3 class="preview-title" style="color:${colorForCategory(previewData.category)}">${esc(previewData.title)}</h3>
+        <div class="preview-meta">${esc(previewData.categoria)} · ${esc(previewData.fecha)} · ${esc(previewData.estado)}</div>
+        <h3 class="preview-title" style="color:var(--red)">${esc(previewData.titulo)}</h3>
         ${previewData.imagen ? `<img src="${esc(previewData.imagen)}" style="max-width:100%;border-radius:12px;margin-bottom:12px;">` : ''}
-        <p class="preview-excerpt">${esc(previewData.excerpt)}</p>
-        <div class="preview-footer">${previewData.featured ? '⭐ Destacado' : 'No destacado'} · ${previewData.status === 'publicado' ? '✅ Publicado' : '📝 Borrador'}</div>
+        <p class="preview-excerpt">${esc(previewData.resumen)}</p>
+        <div class="preview-footer">${previewData.destacado==='true' ? '⭐ Destacado' : 'No destacado'} · ${previewData.estado==='publicado' ? '✅ Publicado' : '📝 Borrador'}</div>
       `;
       document.getElementById('previewModal').style.display = 'flex';
     }
@@ -372,38 +341,55 @@
       document.getElementById('previewModal').style.display = 'none';
     }
 
+    async function savePost(data){
+      try {
+        await fetch(`${SHEET_API}?action=save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        showToast('✅ Guardado');
+        reload();
+      } catch(err) {
+        alert('Error al guardar: ' + err.message);
+      }
+    }
+
     function saveFromPreview(){
       if (!previewData) return;
-      google.script.run.withSuccessHandler(() => {
-        closePreview();
-        reload();
-      }).savePost(previewData);
+      closePreview();
+      savePost(previewData);
     }
 
     function saveRow(btn){
       const tr = btn.closest('tr');
-      google.script.run.withSuccessHandler(reload).savePost(getRowDataFromTr(tr));
+      savePost(getRowDataFromTr(tr));
     }
 
-    function delRow(btn){
+    async function delRow(btn){
       const tr = btn.closest('tr');
       if (!confirm('¿Borrar este escrito?')) return;
-      google.script.run.withSuccessHandler(reload).deletePost(tr.dataset.row);
+      try {
+        await fetch(`${SHEET_API}?action=delete&row=${tr.dataset.row}`);
+        showToast('🗑️ Borrado');
+        reload();
+      } catch(err) {
+        alert('Error al borrar: ' + err.message);
+      }
     }
 
     function newRow(){
       const row = {
         rowNumber: 0,
-        id: '',
-        date: new Date().toLocaleDateString('es-AR'),
-        title: '',
-        category: '',
-        excerpt: '',
-        link: '',
+        id: allPosts.length + 1,
+        fecha: new Date().toLocaleDateString('es-AR'),
+        titulo: '',
+        categoria: '',
+        resumen: '',
         imagen: '',
-        featured: false,
-        status: 'borrador',
-        estado: 'borrador'
+        destacado: 'false',
+        estado: 'borrador',
+        contenido: ''
       };
       allPosts = [row, ...allPosts];
       visiblePosts = [row, ...visiblePosts];
