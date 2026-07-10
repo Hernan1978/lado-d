@@ -78,6 +78,7 @@
       max-width:900px;width:100%;background:#2f1c15;
       border:1px solid rgba(255,255,255,.12);border-radius:22px;
       padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.5);
+      max-height:90vh;overflow-y:auto;
     }
     .modal-top{
       display:flex;justify-content:space-between;align-items:center;
@@ -237,7 +238,7 @@
       try {
         const res = await fetch(`${SHEET_API}?admin=true`);
         const data = await res.json();
-        allPosts = (data.items || []);
+        allPosts = data.items || [];
         fillCategoryFilter();
         applyFilters();
       } catch(err) {
@@ -330,8 +331,9 @@
       document.getElementById('previewContent').innerHTML = `
         <div class="preview-meta">${esc(previewData.categoria)} · ${esc(previewData.fecha)} · ${esc(previewData.estado)}</div>
         <h3 class="preview-title" style="color:var(--red)">${esc(previewData.titulo)}</h3>
-        ${previewData.imagen ? `<img src="${esc(previewData.imagen)}" style="max-width:100%;border-radius:12px;margin-bottom:12px;">` : ''}
+        ${previewData.imagen ? `<img src="${esc(previewData.imagen)}" style="width:180px;height:130px;object-fit:cover;border-radius:10px;float:right;margin:0 0 12px 12px;">` : ''}
         <p class="preview-excerpt">${esc(previewData.resumen)}</p>
+        <div style="clear:both"></div>
         <div class="preview-footer">${previewData.destacado==='true' ? '⭐ Destacado' : 'No destacado'} · ${previewData.estado==='publicado' ? '✅ Publicado' : '📝 Borrador'}</div>
       `;
       document.getElementById('previewModal').style.display = 'flex';
@@ -343,10 +345,12 @@
 
     async function savePost(data){
       try {
-        await fetch(`${SHEET_API}?action=save`, {
+        const params = new URLSearchParams();
+        params.append('action', 'save');
+        params.append('data', JSON.stringify(data));
+        await fetch(SHEET_API, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+          body: params
         });
         showToast('✅ Guardado');
         reload();
