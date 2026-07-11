@@ -342,22 +342,23 @@
       document.getElementById('previewModal').style.display = 'none';
     }
 
-   async function savePost(data){
+ async function savePost(data){
   try {
-    const params = new URLSearchParams();
-    params.append('action', 'save');
-    params.append('data', JSON.stringify(data));
-    const res = await fetch(`${SHEET_API}?${params.toString()}`);
+    const url = SHEET_API + '?action=save&data=' + encodeURIComponent(JSON.stringify(data));
+    const res = await fetch(url);
     const result = await res.json();
-    console.log('Respuesta del servidor:', result);
-    showToast('✅ Guardado');
-    reload();
+    console.log('Respuesta:', result);
+    if(result.status === 'ok'){
+      showToast('✅ Guardado');
+      reload();
+    } else {
+      alert('Error: ' + JSON.stringify(result));
+    }
   } catch(err) {
     console.error('Error:', err);
     alert('Error al guardar: ' + err.message);
   }
 }
-
     function saveFromPreview(){
       if (!previewData) return;
       closePreview();
