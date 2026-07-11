@@ -344,15 +344,13 @@
 
 async function savePost(data){
   try {
-    const formData = new FormData();
-    formData.append('action', 'save');
-    formData.append('data', JSON.stringify(data));
-    const res = await fetch(SHEET_API, {
+    const res = await fetch('/api/save', {
       method: 'POST',
-      body: formData
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
     });
-    const text = await res.text();
-    console.log('Respuesta:', text);
+    const result = await res.json();
+    console.log('Respuesta:', result);
     showToast('✅ Guardado');
     reload();
   } catch(err) {
