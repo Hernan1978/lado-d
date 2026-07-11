@@ -92,7 +92,6 @@
     .preview-meta{color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-size:.8rem;margin-bottom:10px}
     .preview-title{margin:0 0 10px;font-size:2rem;line-height:1.1}
     .preview-excerpt{margin:0 0 14px;color:var(--text);font-size:1rem;white-space:pre-wrap}
-    .preview-link{color:var(--cyan);word-break:break-all}
     .preview-footer{margin-top:12px;color:var(--green);font-size:.9rem}
     .img-preview{max-width:100%;border-radius:12px;margin-top:12px;display:none;}
     .img-result{
@@ -242,7 +241,7 @@
         fillCategoryFilter();
         applyFilters();
       } catch(err) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--red);padding:30px;">Error al cargar. Verificá el Apps Script.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--red);padding:30px;">Error al cargar.</td></tr>';
       }
     }
 
@@ -348,10 +347,7 @@
         const params = new URLSearchParams();
         params.append('action', 'save');
         params.append('data', JSON.stringify(data));
-        await fetch(SHEET_API, {
-          method: 'POST',
-          body: params
-        });
+        await fetch(`${SHEET_API}?${params.toString()}`);
         showToast('✅ Guardado');
         reload();
       } catch(err) {
