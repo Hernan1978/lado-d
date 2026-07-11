@@ -342,18 +342,21 @@
       document.getElementById('previewModal').style.display = 'none';
     }
 
-    async function savePost(data){
-      try {
-        const params = new URLSearchParams();
-        params.append('action', 'save');
-        params.append('data', JSON.stringify(data));
-        await fetch(`${SHEET_API}?${params.toString()}`);
-        showToast('✅ Guardado');
-        reload();
-      } catch(err) {
-        alert('Error al guardar: ' + err.message);
-      }
-    }
+   async function savePost(data){
+  try {
+    const params = new URLSearchParams();
+    params.append('action', 'save');
+    params.append('data', JSON.stringify(data));
+    const res = await fetch(`${SHEET_API}?${params.toString()}`);
+    const result = await res.json();
+    console.log('Respuesta del servidor:', result);
+    showToast('✅ Guardado');
+    reload();
+  } catch(err) {
+    console.error('Error:', err);
+    alert('Error al guardar: ' + err.message);
+  }
+}
 
     function saveFromPreview(){
       if (!previewData) return;
