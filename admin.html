@@ -342,18 +342,19 @@
       document.getElementById('previewModal').style.display = 'none';
     }
 
- async function savePost(data){
+async function savePost(data){
   try {
-    const url = SHEET_API + '?action=save&data=' + encodeURIComponent(JSON.stringify(data));
-    const res = await fetch(url);
-    const result = await res.json();
-    console.log('Respuesta:', result);
-    if(result.status === 'ok'){
-      showToast('✅ Guardado');
-      reload();
-    } else {
-      alert('Error: ' + JSON.stringify(result));
-    }
+    const formData = new FormData();
+    formData.append('action', 'save');
+    formData.append('data', JSON.stringify(data));
+    const res = await fetch(SHEET_API, {
+      method: 'POST',
+      body: formData
+    });
+    const text = await res.text();
+    console.log('Respuesta:', text);
+    showToast('✅ Guardado');
+    reload();
   } catch(err) {
     console.error('Error:', err);
     alert('Error al guardar: ' + err.message);
