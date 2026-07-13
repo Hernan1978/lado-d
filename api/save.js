@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ status: 'error', message: 'Method not allowed' });
   }
 
-  const SHEET_API = 'https://script.google.com/macros/s/AKfycbxDbE4PP6MB842HVFEnPt6yC5gjJnc8r4u4Wl9WeYJvDJ4iQk6w1cXOskoiOtiDfO9j/exec';
+  const SHEET_API = 'https://script.google.com/macros/s/AKfycbxfEtCvNYk3cWjuhLk2giOX2W1dPFo5I0Z761DK90jRUPGsFK0WsOs5lRvLNo7kxyEt/exec';
 
   try {
     const data = req.body;
