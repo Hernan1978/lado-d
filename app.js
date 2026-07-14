@@ -202,16 +202,14 @@ async function renderEdiciones(){
       return;
     }
 
-    container.innerHTML = ediciones.map((ed, i) => `
-      <div class="edicion-card" onclick="toggleEdicion(${i}, '${ed.fecha}')">
-        <div class="edicion-numero">N° ${ed.id} · ${ed.fecha}</div>
-        <div class="edicion-nombre">${ed.nombre}</div>
-        <div class="edicion-descripcion">${ed.descripcion}</div>
-        <div class="edicion-notas" id="edicion-notas-${i}">
-          <p style="color:var(--muted);font-size:.85rem;">Cargando notas...</p>
-        </div>
-      </div>
-    `).join('');
+  container.innerHTML = ediciones.map((ed, i) => `
+  <div class="edicion-card">
+    <div class="edicion-numero">N° ${ed.id} · ${ed.fecha}</div>
+    <div class="edicion-nombre">${ed.nombre}</div>
+    <div class="edicion-descripcion">${ed.descripcion}</div>
+    <a class="btn btn-primary" href="edicion.html?id=${ed.id}" style="display:inline-flex;margin-top:12px;font-size:.85rem;">Ver edición completa →</a>
+  </div>
+`).join('');
 
   } catch(err) {
     container.innerHTML = '<p style="color:var(--muted);">Error al cargar las ediciones.</p>';
