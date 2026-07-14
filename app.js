@@ -169,7 +169,25 @@ async function renderMuralPreview(){
       container.innerHTML = '<p style="color:var(--muted);text-align:center;">Sin hitos cargados.</p>';
       return;
     }
-
+async function loadData(){
+  try {
+    const res = await fetch(SHEET_API);
+    const data = await res.json();
+    const rawItems = Array.isArray(data.items) ? data.items : data;
+    state.items = (rawItems || []).map(normalizeItem);
+  } catch(err) {
+    state.items = [];
+    if (featuredMeta) {
+      featuredMeta.textContent = 'Error al cargar';
+      featuredTitle.textContent = 'No se pudo conectar con Sheets';
+      featuredExcerpt.textContent = 'Verificá que el Apps Script esté desplegado como público.';
+    }
+  }
+  renderFilters();
+  render();
+  renderMuralPreview();
+  renderEdiciones();
+}
     const preview = muralHitos.slice(0, 2);
 
     container.innerHTML = `
@@ -206,5 +224,75 @@ async function loadData(){
   render();
   renderMuralPreview();
 }
+async function renderEdiciones(){
+  const container = document.getElementById('edicionesContainer');
+  if (!container) return;
 
+  try {
+    const res = await fetch(`${SHEET_API}?sheet=ediciones`);
+    const data = await res.json();
+    const ediciones = data.items || [];
+
+    if (ediciones.length === 0) {
+      container.innerHTML = '<p style="color:var(--muted);">No hay ediciones publicadas todavía.</p>';
+      return;
+    }
+
+    container.innerHTML = ediciones.map((ed, i) => `
+      <div class="edicion-card" onclick="toggleEdicion(${i}, '${ed.fecha}')">
+        <div class="edicion-numero">N° ${ed.id} · ${ed.fecha}</div>
+        <div class="edicion-nombre">${ed.nombre}</div>
+        <div class="edicion-descripcion">${ed.descripcion}</div>
+        <div class="edicion-notas" id="edicion-notas-${i}">
+          <p style="color:var(--muted);font-size:.85rem;">Cargando notas...</p>
+        </div>
+      </div>
+    `).join('');
+
+  } catch(err) {
+    container.innerHTML = '<p style="color:var(--muted);">Error al cargar las ediciones.</p>';
+  }
+}
+
+const edicionesAbiertas = {};
+
+window.toggleEdicion = async function(idx, fecha){
+  const notas = document.getElementById(`edicion-notas-${idx}`);
+  if (!notas) return;
+
+  if (notas.classList.contains('open')) {
+    notas.classList.remove('open');
+    return;
+  }
+
+  notas.classList.add('open');
+
+  if (edicionesAbiertas[idx]) return;
+  edicionesAbiertas[idx] = true;
+
+  try {
+    const res = await fetch(`${SHEET_API}?edicion=${encodeURIComponent(fecha)}`);
+    const data = await res.json();
+    const items = data.items || [];
+
+    if (items.length === 0) {
+      notas.innerHTML = '<p style="color:var(--muted);font-size:.85rem;">No hay notas en esta edición todavía.</p>';
+      return;
+    }
+
+    notas.innerHTML = items.map(n => `
+      <div class="edicion-nota">
+        ${n.imagen ? `<img class="edicion-nota-img" src="${n.imagen}" alt="${n.titulo}">` : ''}
+        <div class="edicion-nota-body">
+          <div class="edicion-nota-titulo">${n.titulo}</div>
+          <div class="edicion-nota-resumen">${n.resumen}</div>
+          <a class="edicion-nota-link" href="nota.html?id=${n.id}">Leer nota →</a>
+        </div>
+      </div>
+    `).join('');
+
+  } catch(err) {
+    notas.innerHTML = '<p style="color:var(--muted);font-size:.85rem;">Error al cargar las notas.</p>';
+  }
+};
 loadData();
