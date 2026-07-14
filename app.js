@@ -78,116 +78,6 @@ function render(){
   renderGrid(filtered);
 }
 
-function muralStylesOnce(){
-  if (document.getElementById('muralAnimStyles')) return;
-  const style = document.createElement('style');
-  style.id = 'muralAnimStyles';
-  style.textContent = `
-    .papel-mural{ transform: rotate(var(--rot)); transition: filter .2s; }
-    .papel-mural:hover{ filter: brightness(1.08); }
-    .papel-sway-a{ animation: swayA 6s ease-in-out infinite; }
-    .papel-sway-b{ animation: swayB 7s ease-in-out infinite; }
-    @keyframes swayA{
-      0%,100%{ transform: rotate(var(--rot)); }
-      50%{ transform: rotate(calc(var(--rot) + 1.5deg)); }
-    }
-    @keyframes swayB{
-      0%,100%{ transform: rotate(var(--rot)); }
-      50%{ transform: rotate(calc(var(--rot) - 1.8deg)); }
-    }
-  `;
-  document.head.appendChild(style);
-}
-
-const rotaciones = [-2.5, 1.8, -1, 2.2, -1.5, 2, -1.2, 1.5];
-const papelColors = ['#ede4c8','#e8dfc4','#f2e9d2','#ebe2c6','#eee5ca'];
-let muralHitos = [];
-const muralVotados = {};
-
-function papelHTML(h, i){
-  const rot = rotaciones[i % rotaciones.length];
-  const bg = papelColors[i % papelColors.length];
-  const sway = (i % 2 === 0) ? 'papel-sway-a' : 'papel-sway-b';
-  return `
-    <div onclick="abrirExp(${i})" class="papel-mural ${sway}"
-      style="--rot:${rot}deg;cursor:pointer;background:${bg};padding:1rem 1.1rem 1.2rem;position:relative;border-radius:2px;box-shadow:2px 4px 12px rgba(0,0,0,.4);">
-      <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(calc(-1 * var(--rot)));width:50px;height:14px;background:rgba(220,200,150,0.55);border:0.5px solid rgba(180,160,100,0.3);border-radius:1px;"></div>
-      <div style="font-family:monospace;font-size:10px;color:#8b2500;letter-spacing:.1em;margin-bottom:.3rem;">${h.anio||''}</div>
-      <div style="font-size:16px;font-weight:700;color:#1a1008;margin-bottom:.4rem;line-height:1.2;">${h.titulo||''}</div>
-      <div style="font-family:monospace;font-size:11.5px;color:#3d2e10;line-height:1.6;">${h.descripcion||h.descrpcion||''}</div>
-      <div style="font-family:monospace;font-size:11px;color:#8b2500;margin-top:.5rem;border-bottom:1.5px solid #8b2500;display:inline-block;">${h.tag||''}</div>
-      <div style="font-family:monospace;font-size:10px;color:#7a6535;margin-top:.4rem;font-style:italic;">↳ tocá para el veredicto de Carlos</div>
-    </div>
-  `;
-}
-
-window.abrirExp = function(idx) {
-  const h = muralHitos[idx];
-  const votado = muralVotados[idx];
-  const overlay = document.getElementById('expOverlay');
-  if (!overlay || !h) return;
-  overlay.innerHTML = `
-    <div style="background:#f0e8d0;max-width:500px;width:100%;padding:2rem;position:relative;transform:rotate(-0.5deg);border-radius:2px;border-top:5px solid #8b2500;box-shadow:0 20px 60px rgba(0,0,0,.6);">
-      <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:70px;height:16px;background:rgba(220,200,150,0.6);border:0.5px solid rgba(180,160,100,0.3);border-radius:1px;"></div>
-      <button onclick="document.getElementById('expOverlay').style.display='none'" style="position:absolute;top:.75rem;right:1rem;background:none;border:none;font-size:22px;cursor:pointer;color:#8b7a5a;font-family:monospace;">✕</button>
-      <div style="text-align:center;border-bottom:1px dashed #8b7a5a;padding-bottom:1rem;margin-bottom:1.2rem;">
-        <div style="font-family:monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#8b7a5a;margin-bottom:.4rem;">Pasa y mira el mural</div>
-        <div style="font-size:20px;font-weight:700;color:#1a1008;line-height:1.3;">${h.titulo||''}</div>
-      </div>
-      <div style="font-family:monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#8b7a5a;margin-bottom:.35rem;">Hechos</div>
-      <div style="font-family:monospace;font-size:12px;line-height:1.7;color:#3d2e10;margin-bottom:1.1rem;">${h.hechos||'Sin hechos cargados.'}</div>
-      <div style="font-family:monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#8b7a5a;margin-bottom:.35rem;">Opinólogo Carlos</div>
-      <div style="border-left:3px solid #8b2500;padding:.75rem 1rem;font-size:14px;line-height:1.6;color:#1a1008;margin-bottom:1.1rem;background:#e8dfc4;font-weight:600;">${h.sentencia||'Sin sentencia cargada.'}</div>
-      <button onclick="marcarEstabas(${idx})" id="estabas-${idx}" style="display:flex;align-items:center;gap:8px;background:transparent;border:1.5px solid #8b7a5a;border-radius:2px;padding:6px 14px;font-family:monospace;font-size:12px;color:${votado?'#8b2500':'#5a4520'};cursor:pointer;">
-        📍 ${votado ? 'Estuviste ahí' : 'Yo estaba ahí'}
-      </button>
-      <div style="text-align:right;font-family:monospace;font-size:10px;color:#8b7a5a;border-top:1px dashed #8b7a5a;padding-top:.75rem;margin-top:1rem;">Carlos de Argentina</div>
-    </div>
-  `;
-  overlay.style.display = 'flex';
-};
-
-window.marcarEstabas = function(idx) {
-  if (!muralVotados[idx]) {
-    muralVotados[idx] = true;
-    const btn = document.getElementById(`estabas-${idx}`);
-    if (btn) { btn.style.color = '#8b2500'; btn.innerHTML = '📍 Estuviste ahí'; }
-  }
-};
-
-async function renderMuralPreview(){
-  const container = document.getElementById('muralPreviewContainer');
-  if (!container) return;
-  muralStylesOnce();
-
-  try {
-    const res = await fetch(`${SHEET_API}?sheet=mural`);
-    const data = await res.json();
-    muralHitos = data.items || [];
-
-    if (muralHitos.length === 0) {
-      container.innerHTML = '<p style="color:var(--muted);text-align:center;">Sin hitos cargados.</p>';
-      return;
-    }
-
-    const preview = muralHitos.slice(0, 2);
-
-    container.innerHTML = `
-      <div style="position:relative;border-radius:24px;overflow:hidden;padding:2.5rem 2rem 2rem;min-height:260px;background:#1a1612;">
-        <video style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:.45;filter:saturate(.8);" src="carlos-fumando.mp4" autoplay muted loop playsinline></video>
-        <div style="position:absolute;inset:0;background:rgba(10,6,4,.45);z-index:1;pointer-events:none;"></div>
-        <div style="position:relative;z-index:2;display:grid;grid-template-columns:repeat(2,1fr);gap:2rem;" id="muralPreviewHitos"></div>
-      </div>
-      <div id="expOverlay" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;padding:1rem;"></div>
-    `;
-
-    document.getElementById('muralPreviewHitos').innerHTML = preview.map((h,i) => papelHTML(h,i)).join('');
-
-  } catch(err) {
-    container.innerHTML = '<p style="color:var(--muted);text-align:center;">Error al cargar el mural.</p>';
-  }
-}
-
 async function renderEdiciones(){
   const container = document.getElementById('edicionesContainer');
   if (!container) return;
@@ -202,61 +92,19 @@ async function renderEdiciones(){
       return;
     }
 
-  container.innerHTML = ediciones.map((ed, i) => `
-  <div class="edicion-card">
-    <div class="edicion-numero">N° ${ed.id} · ${ed.fecha}</div>
-    <div class="edicion-nombre">${ed.nombre}</div>
-    <div class="edicion-descripcion">${ed.descripcion}</div>
-    <a class="btn btn-primary" href="edicion.html?id=${ed.id}" style="display:inline-flex;margin-top:12px;font-size:.85rem;">Ver edición completa →</a>
-  </div>
-`).join('');
+    container.innerHTML = ediciones.map((ed) => `
+      <div class="edicion-card">
+        <div class="edicion-numero">N° ${ed.id} · ${ed.fecha}</div>
+        <div class="edicion-nombre">${ed.nombre}</div>
+        <div class="edicion-descripcion">${ed.descripcion}</div>
+        <a class="btn btn-primary" href="edicion.html?id=${ed.id}" style="display:inline-flex;margin-top:12px;font-size:.85rem;">Ver edición completa →</a>
+      </div>
+    `).join('');
 
   } catch(err) {
     container.innerHTML = '<p style="color:var(--muted);">Error al cargar las ediciones.</p>';
   }
 }
-
-const edicionesAbiertas = {};
-
-window.toggleEdicion = async function(idx, fecha){
-  const notas = document.getElementById(`edicion-notas-${idx}`);
-  if (!notas) return;
-
-  if (notas.classList.contains('open')) {
-    notas.classList.remove('open');
-    return;
-  }
-
-  notas.classList.add('open');
-
-  if (edicionesAbiertas[idx]) return;
-  edicionesAbiertas[idx] = true;
-
-  try {
-    const res = await fetch(`${SHEET_API}?edicion=${encodeURIComponent(fecha)}`);
-    const data = await res.json();
-    const items = data.items || [];
-
-    if (items.length === 0) {
-      notas.innerHTML = '<p style="color:var(--muted);font-size:.85rem;">No hay notas en esta edición todavía.</p>';
-      return;
-    }
-
-    notas.innerHTML = items.map(n => `
-      <div class="edicion-nota">
-        ${n.imagen ? `<img class="edicion-nota-img" src="${n.imagen}" alt="${n.titulo}">` : ''}
-        <div class="edicion-nota-body">
-          <div class="edicion-nota-titulo">${n.titulo}</div>
-          <div class="edicion-nota-resumen">${n.resumen}</div>
-          <a class="edicion-nota-link" href="nota.html?id=${n.id}">Leer nota →</a>
-        </div>
-      </div>
-    `).join('');
-
-  } catch(err) {
-    notas.innerHTML = '<p style="color:var(--muted);font-size:.85rem;">Error al cargar las notas.</p>';
-  }
-};
 
 async function loadData(){
   try {
@@ -274,7 +122,6 @@ async function loadData(){
   }
   renderFilters();
   render();
-  renderMuralPreview();
   renderEdiciones();
 }
 
