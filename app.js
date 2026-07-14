@@ -169,25 +169,7 @@ async function renderMuralPreview(){
       container.innerHTML = '<p style="color:var(--muted);text-align:center;">Sin hitos cargados.</p>';
       return;
     }
-async function loadData(){
-  try {
-    const res = await fetch(SHEET_API);
-    const data = await res.json();
-    const rawItems = Array.isArray(data.items) ? data.items : data;
-    state.items = (rawItems || []).map(normalizeItem);
-  } catch(err) {
-    state.items = [];
-    if (featuredMeta) {
-      featuredMeta.textContent = 'Error al cargar';
-      featuredTitle.textContent = 'No se pudo conectar con Sheets';
-      featuredExcerpt.textContent = 'Verificá que el Apps Script esté desplegado como público.';
-    }
-  }
-  renderFilters();
-  render();
-  renderMuralPreview();
-  renderEdiciones();
-}
+
     const preview = muralHitos.slice(0, 2);
 
     container.innerHTML = `
@@ -206,24 +188,6 @@ async function loadData(){
   }
 }
 
-async function loadData(){
-  try {
-    const res = await fetch(SHEET_API);
-    const data = await res.json();
-    const rawItems = Array.isArray(data.items) ? data.items : data;
-    state.items = (rawItems || []).map(normalizeItem);
-  } catch(err) {
-    state.items = [];
-    if (featuredMeta) {
-      featuredMeta.textContent = 'Error al cargar';
-      featuredTitle.textContent = 'No se pudo conectar con Sheets';
-      featuredExcerpt.textContent = 'Verificá que el Apps Script esté desplegado como público.';
-    }
-  }
-  renderFilters();
-  render();
-  renderMuralPreview();
-}
 async function renderEdiciones(){
   const container = document.getElementById('edicionesContainer');
   if (!container) return;
@@ -295,4 +259,25 @@ window.toggleEdicion = async function(idx, fecha){
     notas.innerHTML = '<p style="color:var(--muted);font-size:.85rem;">Error al cargar las notas.</p>';
   }
 };
+
+async function loadData(){
+  try {
+    const res = await fetch(SHEET_API);
+    const data = await res.json();
+    const rawItems = Array.isArray(data.items) ? data.items : data;
+    state.items = (rawItems || []).map(normalizeItem);
+  } catch(err) {
+    state.items = [];
+    if (featuredMeta) {
+      featuredMeta.textContent = 'Error al cargar';
+      featuredTitle.textContent = 'No se pudo conectar con Sheets';
+      featuredExcerpt.textContent = 'Verificá que el Apps Script esté desplegado como público.';
+    }
+  }
+  renderFilters();
+  render();
+  renderMuralPreview();
+  renderEdiciones();
+}
+
 loadData();
