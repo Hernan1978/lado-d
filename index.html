@@ -3,73 +3,77 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#160f0c" />
+  <meta name="theme-color" content="#8b0000" />
   <title>LADO D</title>
   <link rel="icon" type="image/png" href="pluma.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Playfair+Display:ital,wght@0,900;1,700&family=Oswald:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="bg-grid"></div>
-  <header class="site-header reveal">
-    <div class="brand">
-      <div class="brand-kicker">LADO D</div>
-      <h1>Argentina sin filtros</h1>
-      <p>Un lugar donde la opinión llega con nombre y apellido y la ironía paga el alquiler.</p>
+
+  <!-- CABECERA -->
+  <header class="diario-cabecera">
+    <div class="cab-top">
+      <span id="cab-numero">AÑO I · N° 1</span>
+      <span id="cab-fecha">JULIO 2026</span>
+      <span>PRECIO: TODO TIENE UN PRECIO?</span>
     </div>
-    <div class="header-hero">
-      <div class="avatar-frame">
-        <img src="carlos.jpg" alt="Carlos" class="avatar">
-      </div>
-      <div class="header-actions">
-        <a class="btn btn-primary" href="#notas">Ver notas</a>
-      </div>
-    </div>
+    <div class="cab-nombre">LADO D</div>
+    <div class="cab-slogan">Argentina sin filtros. Un lugar donde la opinión llega con nombre y apellido y la ironía paga el alquiler.</div>
+    <div class="cab-linea"></div>
   </header>
-  <main>
-    <section class="manifesto reveal">
-      <p>LADO D es un archivo con criterio. No damos cátedra porque eso requiere paciencia y acá escasea. Se mira la realidad argentina con ironía, humor negro y la distancia justa para no contagiarnos. Si algo nos parece brillante, lo decimos. Si algo nos parece ridículo, lo decimos más fuerte.</p>
-    </section>
-    <section id="notas" class="notes reveal">
-      <div class="section-head">
-        <span>Notas</span>
-        <div class="filters" id="filters"></div>
-      </div>
-      <div class="grid" id="notesGrid"></div>
-    </section>
-    <section class="mural-preview reveal">
-      <div class="section-head">
-        <span>El Mural de Carlos</span>
-        <a href="mural.html">Ver el mural →</a>
-      </div>
-      <p style="color:var(--muted);font-size:.9rem;margin:0;">Anuncios, frases y cosas que Carlos pegó en la pared.</p>
-    </section>
-    <section class="ediciones reveal">
-      <div class="section-head">
-        <span>Ediciones</span>
-      </div>
-      <div id="edicionesContainer"></div>
-    </section>
-    <section class="instagram reveal">
-      <div class="section-head">
-        <span>Instagram</span>
-        <a href="https://instagram.com/ladod.argentina" target="_blank" rel="noreferrer">Seguir</a>
-      </div>
-      <div class="instagram-box">
-        <p>Acá podés embebir el feed, 3 posts destacados o un bloque con el último contenido.</p>
-      </div>
-    </section>
-    <section id="cafe" class="support reveal">
-      <img src="carlos2.jpg" alt="Carlos" class="support-img">
-      <div class="support-text">
-        <h2>Si te quedaste leyendo, bienvenido al problema.</h2>
-        <p>Sostener esto lleva más ganas que glamour.</p>
-        <a class="btn btn-primary" href="https://cafecito.app/lado-d" target="_blank" rel="noreferrer">¿Sale un café?</a>
-      </div>
-    </section>
+
+  <hr class="sep-grueso">
+
+  <!-- STRIP MURAL -->
+  <div class="mural-strip">
+    <div class="mural-strip-txt">📌 El Mural de Carlos — Anuncios, publicidad, frases, cosas y recordatorios</div>
+    <a class="mural-strip-link" href="mural.html">Ver el mural →</a>
+  </div>
+
+  <hr class="sep-grueso">
+
+  <!-- NOTA PRINCIPAL -->
+  <main class="diario-cuerpo">
+    <div class="nota-principal" id="notaPrincipal">
+      <div class="volanta">Cargando...</div>
+      <div class="titular-principal">—</div>
+    </div>
+
+    <hr class="sep-grueso">
+
+    <!-- SECCION EDICIONES -->
+    <div class="seccion-bar">Ediciones · Lo que se acumuló</div>
+    <hr class="sep-grueso">
+    <div class="ediciones-grilla" id="edicionesGrilla">
+      <p class="cargando">Cargando ediciones...</p>
+    </div>
+
+    <hr class="sep-grueso">
+
+    <!-- SECCION NOTAS -->
+    <div class="seccion-bar">Notas · Archivo</div>
+    <hr class="sep-grueso">
+    <div class="notas-grilla" id="notasGrilla">
+      <p class="cargando">Cargando notas...</p>
+    </div>
+
+    <hr class="sep-grueso">
+
+    <!-- PIE INTERNO -->
+    <div class="diario-numero-pag">
+      Pág. 1 · Lado D · "Acá caben todas las opiniones, incluso las moderadas. Especialmente esas, sino esto seria aburrido."
+    </div>
   </main>
-  <footer class="site-footer reveal">
-    <p>Acá caben todas las opiniones, incluso las más moderadas. Especialmente esas, porque sin ellas esto sería demasiado interesante. <a href="admin.html" style="color:inherit;text-decoration:none;">@2026</a></p>
+
+  <!-- PIE -->
+  <footer class="diario-pie">
+    <span>lado-d.vercel.app</span>
+    <span><a href="https://cafecito.app/lado-d" target="_blank">Si te quedaste leyendo, bienvenido al problema.
+Sostener esto lleva más ganas que glamour.¿Sale un café?</a></span>
+    <span><a href="admin.html" style="color:inherit;">@2026</a></span>
   </footer>
+
   <script src="app.js"></script>
 </body>
 </html>
