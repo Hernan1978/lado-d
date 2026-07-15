@@ -7,10 +7,6 @@ const state = {
 
 const filtersEl = document.getElementById('filters');
 const gridEl = document.getElementById('notesGrid');
-const featuredMeta = document.getElementById('featuredMeta');
-const featuredTitle = document.getElementById('featuredTitle');
-const featuredExcerpt = document.getElementById('featuredExcerpt');
-const featuredLink = document.getElementById('featuredLink');
 
 function categories(items){
   return ['Todas', ...new Set(items.map(i => i.category).filter(Boolean))];
@@ -42,22 +38,6 @@ function renderFilters(){
   });
 }
 
-function renderFeatured(items){
-  if (!featuredMeta) return;
-  const featured = items.find(i => i.featured) || items[0];
-  if (!featured) {
-    featuredMeta.textContent = 'Sin datos';
-    featuredTitle.textContent = 'Todavía no hay notas';
-    featuredExcerpt.textContent = 'Cargá tus filas en Sheets y volvé a cargar.';
-    featuredLink.href = '#';
-    return;
-  }
-  featuredMeta.textContent = featured.date;
-  featuredTitle.textContent = featured.title;
-  featuredExcerpt.textContent = featured.excerpt;
-  featuredLink.href = featured.link || '#';
-}
-
 function renderGrid(items){
   if (!gridEl) return;
   gridEl.innerHTML = items.map((item, idx) => `
@@ -74,7 +54,6 @@ function render(){
   const filtered = state.category === 'Todas'
     ? state.items
     : state.items.filter(i => i.category === state.category);
-  renderFeatured(filtered);
   renderGrid(filtered);
 }
 
@@ -114,11 +93,6 @@ async function loadData(){
     state.items = (rawItems || []).map(normalizeItem);
   } catch(err) {
     state.items = [];
-    if (featuredMeta) {
-      featuredMeta.textContent = 'Error al cargar';
-      featuredTitle.textContent = 'No se pudo conectar con Sheets';
-      featuredExcerpt.textContent = 'Verificá que el Apps Script esté desplegado como público.';
-    }
   }
   renderFilters();
   render();
