@@ -27,7 +27,7 @@ function renderNotaPrincipal(items){
     <div class="volanta">Nota principal</div>
     <div class="titular-principal">${nota.title}</div>
     <div class="nota-principal-inner">
-      ${nota.image ? `<img class="nota-principal-img" src="${nota.image}" alt="${nota.title}">` : '<div style="background:#d4c89a;height:220px;border:1px solid var(--borde);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px;">[ fotografía ]</div>'}
+      ${(nota.image && nota.image.length > 0) ? `<img class="nota-principal-img" src="${nota.image}" alt="${nota.title}" onerror="this.style.display='none'">` : '<div style="background:#d4c89a;height:220px;border:1px solid var(--borde);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px;">[ fotografía ]</div>'}
       <div>
         <div class="copete">${nota.excerpt}</div>
         <div class="firma">Por Carlos de Argentina · ${nota.date}</div>
