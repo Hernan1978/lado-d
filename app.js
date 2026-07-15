@@ -1,6 +1,6 @@
 const SHEET_API = 'https://script.google.com/macros/s/AKfycbxfEtCvNYk3cWjuhLk2giOX2W1dPFo5I0Z761DK90jRUPGsFK0WsOs5lRvLNo7kxyEt/exec';
 
-const state = { items: [], category: 'Todas' };
+const state = { items: [] };
 
 function normalizeItem(item){
   return {
@@ -15,42 +15,20 @@ function normalizeItem(item){
   };
 }
 
-function renderNotaPrincipal(items){
-  const el = document.getElementById('notaPrincipal');
-  if (!el) return;
-  const nota = items.find(i => i.featured) || items[0];
-  if (!nota) {
-    el.innerHTML = '<div class="volanta">Sin notas publicadas</div>';
-    return;
-  }
-  el.innerHTML = `
-    <div class="volanta">Nota principal</div>
-    <div class="titular-principal">${nota.title}</div>
-    <div class="nota-principal-inner">
-      ${(nota.image && nota.image.length > 0) ? `<img class="nota-principal-img" src="${nota.image}" alt="${nota.title}" onerror="this.style.display='none'">` : '<div style="background:#d4c89a;height:220px;border:1px solid var(--borde);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px;">[ fotografía ]</div>'}
-      <div>
-        <div class="copete">${nota.excerpt}</div>
-        <div class="firma">Por Carlos de Argentina · ${nota.date}</div>
-        <a class="btn-leer" href="${nota.link}">Leer nota completa →</a>
-      </div>
-    </div>
-  `;
-}
-
 function renderNotas(items){
   const el = document.getElementById('notasGrilla');
   if (!el) return;
-  const resto = items.slice(1);
-  if (resto.length === 0) {
-    el.innerHTML = '<p class="cargando">No hay más notas publicadas.</p>';
+  if (items.length === 0) {
+    el.innerHTML = '<p class="cargando">No hay notas publicadas.</p>';
     return;
   }
-  el.innerHTML = resto.map(n => `
+  el.innerHTML = items.map(n => `
     <div class="nota-col">
-      ${n.image ? `<img class="nota-col-img" src="${n.image}" alt="${n.title}">` : ''}
+      ${n.image ? `<img class="nota-col-img" src="${n.image}" alt="${n.title}" onerror="this.style.display='none'">` : ''}
       <div class="volanta" style="font-size:10px;">${n.category || ''}</div>
       <div class="nota-col-titulo">${n.title}</div>
       <div class="nota-col-texto">${n.excerpt}</div>
+      <div class="nota-col-fecha">${n.date}</div>
       <a class="nota-col-link" href="${n.link}">Leer más →</a>
     </div>
   `).join('');
@@ -72,11 +50,11 @@ async function renderEdiciones(){
         <div class="edicion-col-numero">N° ${ed.id} · ${ed.fecha}</div>
         <div class="edicion-col-nombre">${ed.nombre}</div>
         <div class="edicion-col-desc">${ed.descripcion}</div>
-        <a class="edicion-col-link" href="edicion.html?id=${ed.id}">Ver edición completa →</a>
+        <a class="edicion-col-link" href="edicion.html?id=${ed.id}">Ver este quilombo completo →</a>
       </div>
     `).join('');
   } catch(err) {
-    el.innerHTML = '<p class="cargando">Error al cargar las ediciones.</p>';
+    el.innerHTML = '<p class="cargando">Error al cargar este quilombo.</p>';
   }
 }
 
@@ -89,7 +67,6 @@ async function loadData(){
   } catch(err) {
     state.items = [];
   }
-  renderNotaPrincipal(state.items);
   renderNotas(state.items);
   renderEdiciones();
 }
