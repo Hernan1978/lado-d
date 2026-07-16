@@ -139,7 +139,8 @@
       const rot = rotaciones[i % rotaciones.length];
       const bg = papelColors[i % papelColors.length];
       const isLast = hitos.length % 2 !== 0 && i === hitos.length - 1;
-      const sway = (i % 2 === 0) ? 'papel-sway-a' : 'papel-sway-b';
+      const swayAnims = ['papel-sway-a', 'papel-sway-b', 'papel-sway-c'];
+const sway = swayAnims[i % swayAnims.length];
       return `
         <div onclick="abrirExp(${i})" class="papel-mural ${sway}"
           style="--rot:${rot}deg;cursor:pointer;background:${bg};padding:1rem 1.1rem 1.2rem;position:relative;border-radius:2px;box-shadow:2px 4px 14px rgba(0,0,0,.5);${isLast?'grid-column:1/-1;max-width:340px;margin:0 auto;':''}">
