@@ -15,25 +15,6 @@ function normalizeItem(item){
   };
 }
 
-function renderNotas(items){
-  const el = document.getElementById('notasGrilla');
-  if (!el) return;
-  if (items.length === 0) {
-    el.innerHTML = '<p class="cargando">No hay notas publicadas.</p>';
-    return;
-  }
-  el.innerHTML = items.map(n => `
-    <div class="nota-col">
-      ${n.image ? `<img class="nota-col-img" src="${n.image}" alt="${n.title}" onerror="this.style.display='none'">` : ''}
-      <div class="volanta" style="font-size:10px;">${n.category || ''}</div>
-      <div class="nota-col-titulo">${n.title}</div>
-      <div class="nota-col-texto">${n.excerpt}</div>
-      <div class="nota-col-fecha">${n.date}</div>
-      <a class="nota-col-link" href="${n.link}">Leer más →</a>
-    </div>
-  `).join('');
-}
-
 async function renderEdiciones(){
   const el = document.getElementById('edicionesGrilla');
   if (!el) return;
@@ -67,7 +48,6 @@ async function loadData(){
   } catch(err) {
     state.items = [];
   }
-  renderNotas(state.items);
   renderEdiciones();
 }
 
