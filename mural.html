@@ -80,14 +80,29 @@
     .papel-sway-a{ animation: swayA 6s ease-in-out infinite; }
     .papel-sway-b{ animation: swayB 7s ease-in-out infinite; }
     @keyframes swayA{
-      0%,100%{ transform: rotate(var(--rot)); }
-      50%{ transform: rotate(calc(var(--rot) + 1.5deg)); }
-    }
-    @keyframes swayB{
-      0%,100%{ transform: rotate(var(--rot)); }
-      50%{ transform: rotate(calc(var(--rot) - 1.8deg)); }
-    }
-  </style>
+  0%{ transform: rotate(var(--rot)); }
+  20%{ transform: rotate(calc(var(--rot) + 2.5deg)) translateY(-2px); }
+  45%{ transform: rotate(calc(var(--rot) - 1deg)) translateY(1px); }
+  70%{ transform: rotate(calc(var(--rot) + 3deg)) translateY(-1px); }
+  100%{ transform: rotate(var(--rot)); }
+}
+
+@keyframes swayB{
+  0%{ transform: rotate(var(--rot)); }
+  15%{ transform: rotate(calc(var(--rot) - 3deg)) translateY(-1px); }
+  40%{ transform: rotate(calc(var(--rot) + 1.5deg)) translateY(2px); }
+  65%{ transform: rotate(calc(var(--rot) - 2deg)) translateY(-2px); }
+  85%{ transform: rotate(calc(var(--rot) + 0.5deg)); }
+  100%{ transform: rotate(var(--rot)); }
+}
+
+@keyframes swayC{
+  0%{ transform: rotate(var(--rot)) translateY(0); }
+  25%{ transform: rotate(calc(var(--rot) + 1.8deg)) translateY(-3px); }
+  50%{ transform: rotate(calc(var(--rot) - 2.5deg)) translateY(1px); }
+  75%{ transform: rotate(calc(var(--rot) + 1deg)) translateY(-1px); }
+  100%{ transform: rotate(var(--rot)) translateY(0); }
+}  </style>
 </head>
 <body>
   <div class="bg-grid"></div>
