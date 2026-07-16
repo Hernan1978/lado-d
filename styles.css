@@ -340,7 +340,26 @@ a{ color: inherit; text-decoration: none; }
   color: var(--muted);
   font-size: 12px;
 }
+.cab-carlos{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin-top:6px;
+  font-size:10px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  opacity:.85;
+}
 
+.cab-carlos-img{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  object-fit:cover;
+  border:1px solid rgba(240,230,200,.4);
+  filter:grayscale(.3);
+}
 @media(max-width: 700px){
   .nota-principal-inner{ grid-template-columns: 1fr; }
   .ediciones-grilla{ grid-template-columns: 1fr; }
