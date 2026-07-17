@@ -56,15 +56,6 @@ function renderDestacada(items){
   document.getElementById('npCopete').textContent = nota.excerpt;
   document.getElementById('npLink').href = nota.link;
 
-  const img = document.getElementById('npImg');
-  if (nota.image) {
-    img.src = nota.image;
-    img.alt = nota.title;
-    img.style.display = '';
-  } else {
-    img.style.display = 'none';
-  }
-
   wrap.style.display = '';
   if (sep) sep.style.display = '';
 }
