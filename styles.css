@@ -42,11 +42,24 @@ a{ color: inherit; text-decoration: none; }
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  row-gap: 4px;
+  column-gap: 16px;
   font-size: 10px;
-  letter-spacing: .15em;
+  line-height: 1.5;
+  letter-spacing: .1em;
   margin-bottom: 4px;
   opacity: .85;
   text-transform: uppercase;
+}
+
+.cab-top span{
+  flex: 1 1 auto;
+}
+
+.cab-top span:last-child{
+  flex-basis: 100%;
+  text-align: center;
 }
 
 .cab-nombre{
@@ -91,11 +104,12 @@ a{ color: inherit; text-decoration: none; }
 .mural-strip{
   background: var(--amarillo);
   color: var(--tinta);
-  padding: 6px 16px;
+  padding: 8px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  row-gap: 6px;
   flex-wrap: wrap;
 }
 
@@ -103,8 +117,10 @@ a{ color: inherit; text-decoration: none; }
   font-family: 'Oswald', sans-serif;
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: .08em;
+  letter-spacing: .06em;
+  line-height: 1.5;
   text-transform: uppercase;
+  flex: 1 1 260px;
 }
 
 .mural-strip-link{
@@ -112,6 +128,7 @@ a{ color: inherit; text-decoration: none; }
   color: var(--rojo);
   font-weight: bold;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .mural-strip-link:hover{ text-decoration: underline; }
@@ -123,18 +140,43 @@ a{ color: inherit; text-decoration: none; }
   padding: 0 16px 40px;
 }
 
-/* NOTA PRINCIPAL */
+/* NOTA PRINCIPAL — hero con video de fondo tipo cartel */
 .nota-principal{
-  padding: 16px 0 14px;
+  position: relative;
+  min-height: 420px;
+  margin: 18px 0;
+  overflow: hidden;
+  border: 1px solid var(--borde);
+  box-shadow: var(--shadow);
 }
 
-.volanta{
-  font-family: 'Oswald', sans-serif;
-  font-size: 11px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--rojo);
-  margin-bottom: 4px;
+.hero-video{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(.35) contrast(1.1);
+}
+
+.hero-overlay{
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15,9,4,.15) 0%, rgba(15,9,4,.55) 55%, rgba(15,9,4,.92) 100%);
+}
+
+.nota-principal-inner{
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 420px;
+  padding: 28px 28px 26px;
+}
+
+.nota-principal .volanta{
+  color: var(--amarillo);
 }
 
 .titular-principal{
@@ -142,32 +184,20 @@ a{ color: inherit; text-decoration: none; }
   font-size: clamp(28px, 5vw, 48px);
   font-weight: 900;
   line-height: 1.05;
-  margin: 0 0 10px;
-  color: var(--tinta);
-}
-
-.nota-principal-inner{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  align-items: start;
-}
-
-.nota-principal-img{
-  width: 100%;
-  max-height: 260px;
-  object-fit: cover;
-  filter: grayscale(.3) contrast(1.05);
-  border: 1px solid var(--borde);
+  margin: 0 0 12px;
+  color: var(--papel);
+  text-shadow: 0 2px 10px rgba(0,0,0,.4);
+  max-width: 720px;
 }
 
 .copete{
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.65;
-  color: var(--tinta-clara);
-  border-left: 3px solid var(--rojo);
+  color: rgba(240,230,200,.9);
+  border-left: 3px solid var(--amarillo);
   padding-left: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
+  max-width: 560px;
 }
 
 .firma{
@@ -175,21 +205,23 @@ a{ color: inherit; text-decoration: none; }
   font-size: 10px;
   letter-spacing: .15em;
   text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 10px;
+  color: var(--papel-oscuro);
+  margin-bottom: 12px;
 }
 
 .btn-leer{
   display: inline-block;
+  align-self: flex-start;
   background: var(--rojo);
   color: var(--papel);
   font-family: 'Oswald', sans-serif;
   font-size: 11px;
   letter-spacing: .15em;
   text-transform: uppercase;
-  padding: 6px 16px;
+  padding: 8px 18px;
   border: none;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .btn-leer:hover{ background: #6b0000; }
