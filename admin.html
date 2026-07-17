@@ -211,6 +211,17 @@
     let allPosts = [];
     let visiblePosts = [];
     let previewData = null;
+    let ediciones = [];
+
+    async function loadEdiciones(){
+      try {
+        const res = await fetch(`${SHEET_API}?sheet=ediciones`);
+        const data = await res.json();
+        ediciones = data.items || [];
+      } catch(err) {
+        ediciones = [];
+      }
+    }
 
     function showToast(msg){
       const t = document.getElementById('toast');
@@ -235,7 +246,7 @@
       const tbody = document.getElementById('rows');
       tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:30px;">Cargando...</td></tr>';
       try {
-        const res = await fetch(`${SHEET_API}?admin=true`);
+        const [res] = await Promise.all([fetch(`${SHEET_API}?admin=true`), loadEdiciones()]);
         const data = await res.json();
         allPosts = data.items || [];
         fillCategoryFilter();
@@ -295,8 +306,10 @@
             <div class="actions">
               <button class="btn warn" onclick="previewRow(this)">Vista previa</button>
               <button class="btn primary" onclick="saveRow(this)">Guardar</button>
+              <button class="btn" style="background:var(--cyan);color:#0b2530;" onclick="archivarEnEdicion(this)">📦 Archivar</button>
               <button class="btn danger" onclick="delRow(this)">Borrar</button>
             </div>
+            ${p.edicion ? `<div style="font-size:.7rem;color:var(--muted);margin-top:6px;">📦 En edición: ${esc(p.edicion)}</div>` : ''}
           </td>
         </tr>
       `;
@@ -310,6 +323,7 @@
 
     function getRowDataFromTr(tr){
       const get = k => tr.querySelector(`[data-k="${k}"]`);
+      const original = allPosts.find(p => String(p.rowNumber) === tr.dataset.row);
       return {
         rowNumber: tr.dataset.row,
         id: get('id').value,
@@ -320,7 +334,8 @@
         imagen: get('imagen').value,
         destacado: get('destacado').checked ? 'true' : 'false',
         estado: get('estado').value,
-        contenido: allPosts.find(p => String(p.rowNumber) === tr.dataset.row)?.contenido || ''
+        contenido: original?.contenido || '',
+        edicion: original?.edicion || ''
       };
     }
 
@@ -367,6 +382,22 @@ async function savePost(data){
     function saveRow(btn){
       const tr = btn.closest('tr');
       savePost(getRowDataFromTr(tr));
+    }
+
+    function archivarEnEdicion(btn){
+      if (ediciones.length === 0) {
+        alert('Todavía no hay ninguna Edición cargada en la pestaña "Ediciones" del Sheet. Cargá una primero.');
+        return;
+      }
+      const tr = btn.closest('tr');
+      const data = getRowDataFromTr(tr);
+      const ultima = ediciones.reduce((a, b) => (Number(b.id) > Number(a.id) ? b : a), ediciones[0]);
+
+      if (!confirm(`¿Archivar "${data.titulo || '(sin título)'}" en la Edición N° ${ultima.id} — ${ultima.nombre}?\n\nSe le va a sacar el Destacado.`)) return;
+
+      data.edicion = ultima.fecha;
+      data.destacado = 'false';
+      savePost(data);
     }
 
     async function delRow(btn){
