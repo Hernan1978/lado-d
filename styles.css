@@ -140,7 +140,64 @@ a{ color: inherit; text-decoration: none; }
   padding: 0 16px 40px;
 }
 
-/* EFEMÉRIDE — recorte de diario viejo */
+/* PASACALLE — cuelga entre dos postes, flameando */
+.pasacalle-zona{
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  height: 118px;
+  margin: 8px auto 4px;
+}
+
+.pasacalle-svg{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 65px;
+}
+
+.pasacalle-tela{
+  position: absolute;
+  top: 40px;
+  left: 7%;
+  right: 7%;
+  background: var(--papel);
+  border: 2px solid var(--tinta);
+  padding: 14px 18px;
+  text-align: center;
+  box-shadow: 0 6px 14px rgba(26,18,8,.3);
+  transform-origin: 50% 0%;
+  animation: pasacalle-flamear 4s ease-in-out infinite;
+}
+
+.pasacalle-tela::before,
+.pasacalle-tela::after{
+  content: '';
+  position: absolute;
+  top: -9px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2a1c10;
+}
+.pasacalle-tela::before{ left: 10%; }
+.pasacalle-tela::after{ right: 10%; }
+
+.pasacalle-tela span{
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: clamp(15px, 3vw, 25px);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--rojo);
+  line-height: 1.2;
+}
+
+@keyframes pasacalle-flamear{
+  0%, 100%{ transform: rotate(-1deg) skewX(-1deg); }
+  50%{ transform: rotate(1deg) skewX(1deg); }
+}
 .efemeride-zona{
   display: flex;
   justify-content: center;
