@@ -60,6 +60,25 @@ function renderDestacada(items){
   if (sep) sep.style.display = '';
 }
 
+function normalizeTxt(s){
+  return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+}
+
+function renderEfemeride(items){
+  const zona = document.getElementById('efemerideZona');
+  if (!zona) return;
+
+  const ef = items.find(n => normalizeTxt(n.category) === 'efemeride');
+  if (!ef) {
+    zona.style.display = 'none';
+    return;
+  }
+
+  document.getElementById('efTitulo').textContent = ef.title;
+  document.getElementById('efTexto').textContent = ef.excerpt;
+  zona.style.display = '';
+}
+
 async function loadData(){
   try {
     const res = await fetch(SHEET_API);
@@ -70,6 +89,7 @@ async function loadData(){
     state.items = [];
   }
   renderDestacada(state.items);
+  renderEfemeride(state.items);
   renderEdiciones();
 }
 
