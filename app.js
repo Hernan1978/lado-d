@@ -54,7 +54,9 @@ function renderDestacada(items){
   document.getElementById('npVolanta').textContent = nota.category || 'Destacada';
   document.getElementById('npTitular').textContent = nota.title;
   document.getElementById('npCopete').textContent = nota.excerpt;
-  document.getElementById('npLink').href = nota.link;
+  const link = document.getElementById('npLink');
+  link.href = nota.link;
+  link.textContent = 'Leer nota completa';
 
   wrap.style.display = '';
   if (sep) sep.style.display = '';
@@ -79,6 +81,24 @@ function renderEfemeride(items){
   zona.style.display = '';
 }
 
+function renderPasacalle(items){
+  const zona = document.getElementById('pasacalleZona');
+  if (!zona) return;
+
+  const frase = items.find(n => {
+    const c = normalizeTxt(n.category);
+    return c === 'frase' || c === 'frases';
+  });
+
+  if (!frase) {
+    zona.style.display = 'none';
+    return;
+  }
+
+  document.getElementById('pasacalleTexto').textContent = frase.title || frase.excerpt;
+  zona.style.display = '';
+}
+
 async function loadData(){
   try {
     const res = await fetch(SHEET_API);
@@ -90,6 +110,7 @@ async function loadData(){
   }
   renderDestacada(state.items);
   renderEfemeride(state.items);
+  renderPasacalle(state.items);
   renderEdiciones();
 }
 
