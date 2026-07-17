@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#160f0c" />
+  <title>Baúl de los recuerdos · LADO D</title>
+  <link rel="icon" type="image/png" href="pluma.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .baul-wrap{
+      width:min(960px,92vw);
+      margin:0 auto;
+      padding:40px 0 80px;
+    }
+    .baul-volver{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      font-size:.85rem;
+      margin-bottom:24px;
+      letter-spacing:.08em;
+    }
+    .baul-volver:hover{ color:var(--text); }
+    .baul-titulo{
+      font-family: 'Oswald', sans-serif;
+      font-size:clamp(2rem,5vw,3rem);
+      color: var(--rojo);
+      text-align:center;
+      margin-bottom:8px;
+    }
+    .baul-sub{
+      text-align:center;
+      color:var(--muted);
+      font-size:.9rem;
+      margin-bottom:32px;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+    .baul-grilla{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:0;
+      border-top:1px solid var(--borde);
+      border-left:1px solid var(--borde);
+    }
+    .baul-grilla .nota-col{
+      border-left:none;
+    }
+    @media (max-width:820px){ .baul-grilla{ grid-template-columns:1fr 1fr; } }
+    @media (max-width:520px){ .baul-grilla{ grid-template-columns:1fr; } }
+    .baul-vacio, .baul-error{
+      text-align:center;
+      padding:60px 20px;
+      color:var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="baul-wrap">
+    <a class="baul-volver" href="/">← Volver a Lado D</a>
+    <h1 class="baul-titulo">Baúl de las remembranzas</h1>
+    <p class="baul-sub">Todo lo que ya escribimos, guardado para cuando te dé nostalgia</p>
+    <div id="baulGrilla" class="baul-grilla">
+      <p class="baul-vacio">Cargando notas...</p>
+    </div>
+  </div>
+  <script>
+    const SHEET_API = 'https://script.google.com/macros/s/AKfycbxfEtCvNYk3cWjuhLk2giOX2W1dPFo5I0Z761DK90jRUPGsFK0WsOs5lRvLNo7kxyEt/exec';
+
+    function normalizeItem(item){
+      return {
+        id:       item.id,
+        title:    item.titulo    || '',
+        category: item.categoria || '',
+        date:     item.fecha     || '',
+        excerpt:  item.resumen   || '',
+        link:     `nota.html?id=${item.id}`,
+        image:    item.imagen    || ''
+      };
+    }
+
+    function renderBaul(items){
+      const el = document.getElementById('baulGrilla');
+      if (items.length === 0) {
+        el.className = '';
+        el.innerHTML = '<p class="baul-vacio">Todavía no hay notas guardadas en el baúl.</p>';
+        return;
+      }
+      el.innerHTML = items.map(n => `
+        <div class="nota-col">
+          ${n.image ? `<img class="nota-col-img" src="${n.image}" alt="${n.title}" onerror="this.style.display='none'">` : ''}
+          <div class="volanta" style="font-size:10px;">${n.category || ''}</div>
+          <div class="nota-col-titulo">${n.title}</div>
+          <div class="nota-col-texto">${n.excerpt}</div>
+          <div class="nota-col-fecha">${n.date}</div>
+          <a class="nota-col-link" href="${n.link}">Leer más →</a>
+        </div>
+      `).join('');
+    }
+
+    async function loadBaul(){
+      const el = document.getElementById('baulGrilla');
+      try {
+        const res = await fetch(SHEET_API);
+        const data = await res.json();
+        const rawItems = Array.isArray(data.items) ? data.items : data;
+        const items = (rawItems || []).map(normalizeItem);
+        renderBaul(items);
+      } catch(err) {
+        el.className = '';
+        el.innerHTML = '<p class="baul-error">Error al cargar el baúl.</p>';
+      }
+    }
+
+    loadBaul();
+  </script>
+</body>
+</html>
