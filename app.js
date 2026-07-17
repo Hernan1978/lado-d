@@ -39,6 +39,36 @@ async function renderEdiciones(){
   }
 }
 
+function renderDestacada(items){
+  const wrap = document.getElementById('notaPrincipal');
+  const sep = document.getElementById('npSep');
+  if (!wrap) return;
+
+  const nota = items.find(n => n.featured) || items[0];
+  if (!nota) {
+    wrap.style.display = 'none';
+    if (sep) sep.style.display = 'none';
+    return;
+  }
+
+  document.getElementById('npVolanta').textContent = nota.category || 'Destacada';
+  document.getElementById('npTitular').textContent = nota.title;
+  document.getElementById('npCopete').textContent = nota.excerpt;
+  document.getElementById('npLink').href = nota.link;
+
+  const img = document.getElementById('npImg');
+  if (nota.image) {
+    img.src = nota.image;
+    img.alt = nota.title;
+    img.style.display = '';
+  } else {
+    img.style.display = 'none';
+  }
+
+  wrap.style.display = '';
+  if (sep) sep.style.display = '';
+}
+
 async function loadData(){
   try {
     const res = await fetch(SHEET_API);
@@ -48,6 +78,7 @@ async function loadData(){
   } catch(err) {
     state.items = [];
   }
+  renderDestacada(state.items);
   renderEdiciones();
 }
 
