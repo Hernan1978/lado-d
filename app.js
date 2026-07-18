@@ -95,7 +95,7 @@ function renderPasacalle(items){
     return;
   }
 
-  document.getElementById('pasacalleTexto').textContent = frase.title || frase.excerpt;
+  document.getElementById('pasacalleTextoInner').textContent = frase.title || frase.excerpt;
   zona.style.display = '';
 }
 
@@ -116,6 +116,7 @@ async function loadData(){
 
 function initParallax(){
   const video = document.querySelector('.pasacalle-video');
+  const texto = document.querySelector('.pasacalle-texto');
   const zona = document.querySelector('.pasacalle-zona');
   if (!video || !zona) return;
 
@@ -123,6 +124,7 @@ function initParallax(){
     const rect = zona.getBoundingClientRect();
     const offset = rect.top * 0.25;
     video.style.transform = `translateY(${offset}px) scale(1.2)`;
+    if (texto) texto.style.transform = `translateY(${offset}px)`;
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
