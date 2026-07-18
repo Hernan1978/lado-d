@@ -120,6 +120,7 @@
       </div>
       <div class="actions">
         <button class="btn primary" onclick="newRow()">Nuevo escrito</button>
+        <button class="btn" style="background:var(--cyan);color:#0b2530;" onclick="guardarTodos()">💾 Guardar todo</button>
         <button class="btn good" onclick="reload()">Refrescar</button>
         <button class="btn warn" onclick="openImgModal()">Subir imagen</button>
         <button class="btn exit" onclick="salir()">Salir</button>
@@ -171,6 +172,12 @@
         <button class="btn" onclick="closePreview()">Cerrar</button>
       </div>
       <div id="previewContent"></div>
+      <div style="margin-top:14px;">
+        <label style="font-size:.8rem;color:var(--muted);display:block;margin-bottom:6px;">
+          Contenido completo de la nota (esto es lo que se ve al entrar a leerla entera — podés usar HTML simple como &lt;p&gt;, &lt;b&gt;, &lt;br&gt;)
+        </label>
+        <textarea id="previewContenido" style="width:100%;min-height:220px;"></textarea>
+      </div>
       <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap">
         <button class="btn" onclick="closePreview()">Seguir editando</button>
         <button class="btn primary" onclick="saveFromPreview()">Guardar ahora</button>
@@ -305,7 +312,6 @@
           <td>
             <div class="actions">
               <button class="btn warn" onclick="previewRow(this)">Vista previa</button>
-              <button class="btn primary" onclick="saveRow(this)">Guardar</button>
               <button class="btn danger" onclick="delRow(this)">Borrar</button>
             </div>
             <select data-k="edicion" style="margin-top:6px;width:100%;font-size:.75rem;">
@@ -353,21 +359,25 @@
         <div class="preview-footer">${previewData.destacado==='true' ? '⭐ Destacado' : 'No destacado'} · ${previewData.estado==='publicado' ? '✅ Publicado' : '📝 Borrador'}</div>
       `;
       document.getElementById('previewModal').style.display = 'flex';
+      document.getElementById('previewContenido').value = previewData.contenido || '';
     }
 
     function closePreview(){
       document.getElementById('previewModal').style.display = 'none';
     }
 
+async function savePostSilent(data){
+  const res = await fetch('/api/save', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
 async function savePost(data){
   try {
-    const res = await fetch('/api/save', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    const result = await res.json();
-    console.log('Respuesta:', result);
+    await savePostSilent(data);
     showToast('✅ Guardado');
     reload();
   } catch(err) {
@@ -375,8 +385,29 @@ async function savePost(data){
     alert('Error al guardar: ' + err.message);
   }
 }
+
+async function guardarTodos(){
+  const filas = [...document.querySelectorAll('#rows tr[data-row]')];
+  if (filas.length === 0) {
+    alert('No hay filas para guardar.');
+    return;
+  }
+  if (!confirm(`¿Guardar los cambios de las ${filas.length} filas visibles?`)) return;
+
+  const datos = filas.map(tr => getRowDataFromTr(tr));
+  try {
+    for (const d of datos) {
+      await savePostSilent(d);
+    }
+    showToast(`✅ ${datos.length} filas guardadas`);
+    reload();
+  } catch(err) {
+    alert('Error al guardar: ' + err.message);
+  }
+}
     function saveFromPreview(){
       if (!previewData) return;
+      previewData.contenido = document.getElementById('previewContenido').value;
       closePreview();
       savePost(previewData);
     }
