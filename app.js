@@ -11,22 +11,26 @@ function normalizeItem(item){
     excerpt:  item.resumen   || '',
     link:     `nota.html?id=${item.id}`,
     featured: String(item.destacado).toLowerCase() === 'true',
-    image:    item.imagen    || ''
+    image:    item.imagen    || '',
+    edicion:  item.edicion   || ''
   };
 }
 
-async function renderEdiciones(){
+async function renderEdiciones(items){
   const el = document.getElementById('edicionesGrilla');
   if (!el) return;
   try {
     const res = await fetch(`${SHEET_API}?sheet=ediciones`);
     const data = await res.json();
     const ediciones = data.items || [];
-    if (ediciones.length === 0) {
+    const archivadas = (items || []).filter(n => n.edicion);
+
+    if (ediciones.length === 0 && archivadas.length === 0) {
       el.innerHTML = '<p class="cargando">No hay ediciones publicadas todavía.</p>';
       return;
     }
-    el.innerHTML = ediciones.map(ed => `
+
+    const cardsEdiciones = ediciones.map(ed => `
       <div class="edicion-col">
         <div class="edicion-col-numero">N° ${ed.id} · ${ed.fecha}</div>
         <div class="edicion-col-nombre">${ed.nombre}</div>
@@ -34,6 +38,17 @@ async function renderEdiciones(){
         <a class="edicion-col-link" href="edicion.html?id=${ed.id}">Ver este quilombo completo →</a>
       </div>
     `).join('');
+
+    const cardsArchivadas = archivadas.map(n => `
+      <div class="edicion-col">
+        <div class="edicion-col-numero">Archivada · ${n.date}</div>
+        <div class="edicion-col-nombre">${n.title}</div>
+        <div class="edicion-col-desc">${n.excerpt}</div>
+        <a class="edicion-col-link" href="${n.link}">Leer nota completa →</a>
+      </div>
+    `).join('');
+
+    el.innerHTML = cardsEdiciones + cardsArchivadas;
   } catch(err) {
     el.innerHTML = '<p class="cargando">Error al cargar este quilombo.</p>';
   }
@@ -44,7 +59,8 @@ function renderDestacada(items){
   const sep = document.getElementById('npSep');
   if (!wrap) return;
 
-  const nota = items.find(n => n.featured) || items[0];
+  const disponibles = items.filter(n => !n.edicion);
+  const nota = disponibles.find(n => n.featured) || disponibles[0];
   if (!nota) {
     wrap.style.display = 'none';
     if (sep) sep.style.display = 'none';
@@ -111,7 +127,7 @@ async function loadData(){
   renderDestacada(state.items);
   renderEfemeride(state.items);
   renderPasacalle(state.items);
-  renderEdiciones();
+  renderEdiciones(state.items);
 }
 
 function initParallax(){
