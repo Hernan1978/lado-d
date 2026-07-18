@@ -114,4 +114,20 @@ async function loadData(){
   renderEdiciones();
 }
 
+function initParallax(){
+  const video = document.querySelector('.pasacalle-video');
+  const zona = document.querySelector('.pasacalle-zona');
+  if (!video || !zona) return;
+
+  function onScroll(){
+    const rect = zona.getBoundingClientRect();
+    const offset = rect.top * 0.25;
+    video.style.transform = `translateY(${offset}px) scale(1.2)`;
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+}
+
 loadData();
+initParallax();
