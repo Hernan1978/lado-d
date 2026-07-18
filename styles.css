@@ -159,6 +159,8 @@ a{ color: inherit; text-decoration: none; }
   object-fit: cover;
   object-position: center center;
   filter: grayscale(.25) contrast(1.05);
+  transform: scale(1.2);
+  will-change: transform;
 }
 
 .pasacalle-overlay{
