@@ -306,7 +306,10 @@
             <div class="actions">
               <button class="btn warn" onclick="previewRow(this)">Vista previa</button>
               <button class="btn primary" onclick="saveRow(this)">Guardar</button>
-              <button class="btn" style="background:var(--cyan);color:#0b2530;" onclick="archivarEnEdicion(this)">📦 Archivar</button>
+              ${p.edicion
+                ? `<button class="btn" style="background:var(--muted);color:#fff;" onclick="quitarDeEdicion(this)">↩️ Quitar de Edición</button>`
+                : `<button class="btn" style="background:var(--cyan);color:#0b2530;" onclick="archivarEnEdicion(this)">📦 Archivar</button>`
+              }
               <button class="btn danger" onclick="delRow(this)">Borrar</button>
             </div>
             ${p.edicion ? `<div style="font-size:.7rem;color:var(--muted);margin-top:6px;">📦 En edición: ${esc(p.edicion)}</div>` : ''}
@@ -382,6 +385,14 @@ async function savePost(data){
     function saveRow(btn){
       const tr = btn.closest('tr');
       savePost(getRowDataFromTr(tr));
+    }
+
+    function quitarDeEdicion(btn){
+      const tr = btn.closest('tr');
+      const data = getRowDataFromTr(tr);
+      if (!confirm(`¿Sacar "${data.titulo || '(sin título)'}" de la edición en la que está archivada?`)) return;
+      data.edicion = '';
+      savePost(data);
     }
 
     function archivarEnEdicion(btn){
