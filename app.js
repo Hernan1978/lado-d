@@ -20,7 +20,7 @@ async function renderEdiciones(items){
   const el = document.getElementById('edicionesGrilla');
   if (!el) return;
   try {
-    const res = await fetch(`${SHEET_API}?sheet=ediciones`);
+    const res = await fetch(`${SHEET_API}?sheet=ediciones`, { cache: 'no-store' });
     const data = await res.json();
     const ediciones = data.items || [];
     const archivadas = (items || []).filter(n => n.edicion);
@@ -117,7 +117,7 @@ function renderPasacalle(items){
 
 async function loadData(){
   try {
-    const res = await fetch(SHEET_API);
+    const res = await fetch(SHEET_API, { cache: 'no-store' });
     const data = await res.json();
     const rawItems = Array.isArray(data.items) ? data.items : data;
     state.items = (rawItems || []).map(normalizeItem);
@@ -138,7 +138,7 @@ function initParallax(){
 
   function onScroll(){
     const rect = zona.getBoundingClientRect();
-    const offset = rect.top * 0.25;
+    const offset = rect.top * 0.08;
     video.style.transform = `translateY(${offset}px) scale(1.2)`;
     if (texto) texto.style.transform = `translateY(${offset}px)`;
   }
