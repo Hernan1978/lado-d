@@ -12,70 +12,8 @@ function normalizeItem(item){
     link:     `nota.html?id=${item.id}`,
     featured: String(item.destacado).toLowerCase() === 'true',
     image:    item.imagen    || '',
-    edicion:  item.edicion   || ''
+    archivada: String(item.edicion || '').trim() !== ''
   };
-}
-
-async function renderEdiciones(items){
-  const el = document.getElementById('edicionesGrilla');
-  if (!el) return;
-  try {
-    const res = await fetch(`${SHEET_API}?sheet=ediciones`, { cache: 'no-store' });
-    const data = await res.json();
-    const ediciones = data.items || [];
-    const archivadas = (items || []).filter(n => n.edicion);
-
-    if (ediciones.length === 0 && archivadas.length === 0) {
-      el.innerHTML = '<p class="cargando">No hay ediciones publicadas todavía.</p>';
-      return;
-    }
-
-    const cardsEdiciones = ediciones.map(ed => `
-      <div class="edicion-col">
-        <div class="edicion-col-numero">N° ${ed.id} · ${ed.fecha}</div>
-        <div class="edicion-col-nombre">${ed.nombre}</div>
-        <div class="edicion-col-desc">${ed.descripcion}</div>
-        <a class="edicion-col-link" href="edicion.html?id=${ed.id}">Ver este quilombo completo →</a>
-      </div>
-    `).join('');
-
-    const cardsArchivadas = archivadas.map(n => `
-      <div class="edicion-col">
-        <div class="edicion-col-numero">Archivada · ${n.date}</div>
-        <div class="edicion-col-nombre">${n.title}</div>
-        <div class="edicion-col-desc">${n.excerpt}</div>
-        <a class="edicion-col-link" href="${n.link}">Leer nota completa →</a>
-      </div>
-    `).join('');
-
-    el.innerHTML = cardsEdiciones + cardsArchivadas;
-  } catch(err) {
-    el.innerHTML = '<p class="cargando">Error al cargar este quilombo.</p>';
-  }
-}
-
-function renderDestacada(items){
-  const wrap = document.getElementById('notaPrincipal');
-  const sep = document.getElementById('npSep');
-  if (!wrap) return;
-
-  const disponibles = items.filter(n => !n.edicion);
-  const nota = disponibles.find(n => n.featured) || disponibles[0];
-  if (!nota) {
-    wrap.style.display = 'none';
-    if (sep) sep.style.display = 'none';
-    return;
-  }
-
-  document.getElementById('npVolanta').textContent = nota.category || 'Destacada';
-  document.getElementById('npTitular').textContent = nota.title;
-  document.getElementById('npCopete').textContent = nota.excerpt;
-  const link = document.getElementById('npLink');
-  link.href = nota.link;
-  link.textContent = 'Leer nota completa';
-
-  wrap.style.display = '';
-  if (sep) sep.style.display = '';
 }
 
 function normalizeTxt(s){
@@ -124,10 +62,8 @@ async function loadData(){
   } catch(err) {
     state.items = [];
   }
-  renderDestacada(state.items);
   renderEfemeride(state.items);
   renderPasacalle(state.items);
-  renderEdiciones(state.items);
 }
 
 function initParallax(){
