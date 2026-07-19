@@ -60,7 +60,7 @@
 <body>
   <div class="baul-wrap">
     <a class="baul-volver" href="/">← Volver a Lado D</a>
-    <h1 class="baul-titulo">Baúl de las remembranzas</h1>
+    <h1 class="baul-titulo">Cofre de la remembranzas</h1>
     <p class="baul-sub">Todo lo que ya escribimos, guardado para cuando te dé nostalgia</p>
     <div id="baulGrilla" class="baul-grilla">
       <p class="baul-vacio">Cargando notas...</p>
@@ -77,7 +77,8 @@
         date:     item.fecha     || '',
         excerpt:  item.resumen   || '',
         link:     `nota.html?id=${item.id}`,
-        image:    item.imagen    || ''
+        image:    item.imagen    || '',
+        archivada: String(item.edicion || '').trim() !== ''
       };
     }
 
@@ -106,7 +107,7 @@
         const res = await fetch(SHEET_API);
         const data = await res.json();
         const rawItems = Array.isArray(data.items) ? data.items : data;
-        const items = (rawItems || []).map(normalizeItem);
+        const items = (rawItems || []).map(normalizeItem).filter(n => n.archivada);
         renderBaul(items);
       } catch(err) {
         el.className = '';
