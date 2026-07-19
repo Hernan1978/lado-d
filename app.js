@@ -24,7 +24,10 @@ function renderEfemeride(items){
   const zona = document.getElementById('efemerideZona');
   if (!zona) return;
 
-  const ef = items.find(n => normalizeTxt(n.category) === 'efemeride');
+  const ef = items.find(n => {
+    const c = normalizeTxt(n.category);
+    return c === 'efemeride' || c === 'efemerides';
+  });
   if (!ef) {
     zona.style.display = 'none';
     return;
