@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#160f0c" />
-  <title>El Mural de Carlos · LADO D</title>
+  <title>El Muro de los chivos · LADO D</title>
   <link rel="icon" type="image/png" href="pluma.png" />
   <link rel="stylesheet" href="styles.css" />
   <style>
@@ -109,8 +109,8 @@
   <div class="bg-grid"></div>
   <div class="mural-wrap">
     <a class="mural-volver" href="/">← Volver a Lado D</a>
-    <h1 class="mural-titulo">El Mural de Carlos</h1>
-    <p class="mural-sub">Hechos de la vida misma sin piedad</p>
+    <h1 class="mural-titulo">El Muro del chivo</h1>
+    <p class="mural-sub">Aca estan esos pequeños momentos de tranquilidad que interrumpimos con nuestros anuncios...</p>
     <div id="muralFullContainer"><p style="color:var(--muted);text-align:center;">Cargando mural...</p></div>
   </div>
   <script>
@@ -150,7 +150,7 @@ const sway = swayAnims[i % swayAnims.length];
           <div style="font-size:16px;font-weight:700;color:#1a1008;margin-bottom:.4rem;line-height:1.2;">${h.titulo||''}</div>
           <div style="font-family:monospace;font-size:11.5px;color:#3d2e10;line-height:1.6;">${h.descripcion||h.descrpcion||''}</div>
           <div style="font-family:monospace;font-size:11px;color:#8b2500;margin-top:.5rem;border-bottom:1.5px solid #8b2500;display:inline-block;">${h.tag||''}</div>
-          <div style="font-family:monospace;font-size:10px;color:#7a6535;margin-top:.4rem;font-style:italic;">↳ tocá para el veredicto de Carlos</div>
+          <div style="font-family:monospace;font-size:10px;color:#7a6535;margin-top:.4rem;font-style:italic;">↳ tocá para ver el anuncio completo</div>
         </div>
       `;
     }
@@ -166,8 +166,8 @@ const sway = swayAnims[i % swayAnims.length];
             <div style="font-family:monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#8b7a5a;margin-bottom:.4rem;">Pasa y mira el mural</div>
             <div style="font-size:20px;font-weight:700;color:#1a1008;line-height:1.3;">${h.titulo||''}</div>
           </div>
-          <div style="font-family:monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#8b7a5a;margin-bottom:.35rem;">Hechos</div>
-          <div style="font-family:monospace;font-size:12px;line-height:1.7;color:#3d2e10;margin-bottom:1.1rem;">${h.hechos||'Sin hechos cargados.'}</div>
+          <div style="font-family:monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#8b7a5a;margin-bottom:.35rem;">Detalle</div>
+          <div style="font-family:monospace;font-size:12px;line-height:1.7;color:#3d2e10;margin-bottom:1.1rem;">${h.hechos||'Sin detalle cargado.'}</div>
           <div style="font-family:monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#8b7a5a;margin-bottom:.35rem;">Opinólogo Carlos</div>
           <div style="border-left:3px solid #8b2500;padding:.75rem 1rem;font-size:14px;line-height:1.6;color:#1a1008;margin-bottom:1.1rem;background:#e8dfc4;font-weight:600;">${h.sentencia||'Sin sentencia cargada.'}</div>
           <button onclick="marcarEstabas(${idx})" id="estabas-${idx}" style="display:flex;align-items:center;gap:8px;background:transparent;border:1.5px solid #8b7a5a;border-radius:2px;padding:6px 14px;font-family:monospace;font-size:12px;color:${votado?'#8b2500':'#5a4520'};cursor:pointer;">
