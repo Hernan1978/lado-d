@@ -56,6 +56,33 @@ function renderPasacalle(items){
   zona.style.display = '';
 }
 
+function renderNotas(items){
+  const el = document.getElementById('notasGrilla');
+  if (!el) return;
+
+  const comunes = items.filter(n => {
+    const c = normalizeTxt(n.category);
+    const esEspecial = c === 'frase' || c === 'frases' || c === 'efemeride' || c === 'efemerides';
+    return !esEspecial && !n.archivada;
+  });
+
+  if (comunes.length === 0) {
+    el.innerHTML = '<p class="cargando">No hay notas publicadas todavía.</p>';
+    return;
+  }
+
+  el.innerHTML = comunes.map(n => `
+    <div class="nota-col">
+      ${n.image ? `<img class="nota-col-img" src="${n.image}" alt="${n.title}" onerror="this.style.display='none'">` : ''}
+      <div class="volanta" style="font-size:10px;">${n.category || ''}</div>
+      <div class="nota-col-titulo">${n.title}</div>
+      <div class="nota-col-texto">${n.excerpt}</div>
+      <div class="nota-col-fecha">${n.date}</div>
+      <a class="nota-col-link" href="${n.link}">Leer más →</a>
+    </div>
+  `).join('');
+}
+
 async function loadData(){
   try {
     const res = await fetch(SHEET_API, { cache: 'no-store' });
@@ -67,6 +94,7 @@ async function loadData(){
   }
   renderEfemeride(state.items);
   renderPasacalle(state.items);
+  renderNotas(state.items);
 }
 
 function initParallax(){
